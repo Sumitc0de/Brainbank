@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: '/ideas',
+  baseURL: import.meta.env.VITE_API_URL || (import.meta.env.DEV ? '/ideas' : 'https://brainbank-15ff.onrender.com/ideas'),
   headers: { 'Content-Type': 'application/json' },
 });
 
