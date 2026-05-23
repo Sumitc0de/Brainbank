@@ -29,16 +29,13 @@ const connectDB = async () => {
     console.log('✅ Connected to MongoDB');
   } catch (err) {
     console.error('❌ MongoDB connection error:', err.message);
-    if (!process.env.VERCEL) {
-      process.exit(1);
-    }
-    throw err;
+    console.log('⚠️ Server will continue running, but database operations will fail until connection succeeds.');
   }
 };
 
 // Start server locally or initialize on Vercel
 if (!process.env.VERCEL) {
-  connectDB().then(() => {
+  connectDB().finally(() => {
     app.listen(PORT, () => {
       console.log(`🚀 FounderOS backend running on port ${PORT}`);
     });
@@ -49,4 +46,5 @@ if (!process.env.VERCEL) {
 }
 
 export default app;
+
 
