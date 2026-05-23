@@ -1,0 +1,169 @@
+@import "tailwindcss";
+
+/* ============================================================
+   IdeasHub Design System v3 - Warm Gamified Light Theme
+   Palette: cream, peach, sunset red, honey, sky, and forest.
+   ============================================================ */
+
+@theme {
+  /* ---- Backgrounds ---- */
+  --color-surface-0: #fff7df;
+  --color-surface-1: #fff1d1;
+  --color-surface-2: #fffaf0;
+  --color-surface-3: #f7e4bd;
+  --color-surface-4: #e8d17a;
+
+  /* ---- Borders ---- */
+  --color-edge: #ead7a8;
+  --color-edge-light: #d8bd72;
+  --color-edge-accent: rgba(223, 32, 70, 0.22);
+
+  /* ---- Text ---- */
+  --color-fg: #213b1f;
+  --color-fg-2: #526348;
+  --color-fg-3: #7d7b5f;
+  --color-fg-4: #a99b75;
+
+  /* ---- Accents ---- */
+  --color-purple: #df2046;
+  --color-purple-soft: #ff9f33;
+  --color-purple-deep: #b91637;
+  --color-blue: #85b9df;
+  --color-cyan: #b8d7e8;
+  --color-green: #2d6f29;
+  --color-amber: #e3c873;
+  --color-red: #df2046;
+  --color-rose: #ef6b5a;
+
+  /* ---- Glass ---- */
+  --color-glass: rgba(255, 255, 255, 0.55);
+  --color-glass-hover: rgba(255, 255, 255, 0.75);
+  --color-glass-border: rgba(92, 76, 35, 0.12);
+
+  /* ---- Shadows ---- */
+  --shadow-card: 0 8px 18px rgba(89, 61, 16, .08), 0 1px 0 rgba(255,255,255,.65) inset;
+  --shadow-elevated: 0 18px 38px rgba(89, 61, 16, .15), 0 1px 0 rgba(255,255,255,.7) inset;
+  --shadow-glow-purple: 0 0 24px rgba(223,32,70,.16);
+  --shadow-glow-cyan: 0 0 24px rgba(133,185,223,.18);
+
+  /* ---- Radius ---- */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* ---- Font ---- */
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  /* ---- Sidebar ---- */
+  --sidebar-width: 256px;  /* w-64 */
+
+  /* ---- Animations ---- */
+  --animate-fade-in: fade-in 0.35s ease-out;
+  --animate-slide-up: slide-up 0.35s ease-out;
+  --animate-pulse-glow: pulse-glow 2.5s ease-in-out infinite;
+}
+
+/* ---- Keyframes ---- */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(139,92,246,.15); }
+  50%      { box-shadow: 0 0 28px rgba(139,92,246,.30); }
+}
+
+/* ============================================================
+   Base Reset
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background:
+    linear-gradient(135deg, rgba(255, 247, 223, .94), rgba(255, 241, 209, .88)),
+    repeating-linear-gradient(90deg, rgba(45,111,41,.035) 0 1px, transparent 1px 38px),
+    repeating-linear-gradient(0deg, rgba(223,32,70,.025) 0 1px, transparent 1px 38px);
+  color: var(--color-fg);
+  min-height: 100vh;
+  overflow: hidden;                  /* root is flex h-screen */
+}
+
+#root { min-height: 100vh; }
+
+/* ---- Scrollbar ---- */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d8bd72; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #2d6f29; }
+
+/* ============================================================
+   Utility Classes
+   ============================================================ */
+
+/* Glass card */
+.glass-panel {
+  background: rgba(255, 250, 240, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--color-glass-border);
+}
+
+/* Gradient text */
+.text-gradient {
+  background: linear-gradient(135deg, var(--color-purple), var(--color-purple-soft), var(--color-green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ---- Inputs ---- */
+input, textarea, select { font-family: var(--font-sans); }
+input::placeholder, textarea::placeholder { color: var(--color-fg-3); }
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--color-purple);
+  box-shadow: 0 0 0 3px rgba(223,32,70,.12);
+}
+
+/* ---- Range slider (for ScoreSlider) ---- */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-purple);
+  border: 2px solid var(--color-surface-2);
+  box-shadow: 0 0 0 3px rgba(255,159,51,.25), 0 2px 6px rgba(89,61,16,.22);
+  cursor: pointer;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-purple);
+  border: 2px solid var(--color-surface-2);
+  box-shadow: 0 0 0 3px rgba(255,159,51,.25), 0 2px 6px rgba(89,61,16,.22);
+  cursor: pointer;
+}
