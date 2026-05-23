@@ -1,13 +1,14 @@
 {
-    "experimentalServices": {
-        "frontend": {
-            "root": "frontend",
-            "routePrefix": "/",
-            "framework": "vite"
-        },
-        "backend": {
-            "root": "backend",
-            "routePrefix": "/_/backend"
-        }
+  "version": 2,
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/ideas/:path*",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/ideas",
+      "destination": "/api/index.js"
     }
+  ]
 }
