@@ -1,9 +1,34 @@
 import axios from 'axios';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL
+  || (import.meta.env.DEV ? '/ideas' : 'https://brainbank-15ff.onrender.com/ideas');
+
+const getApiErrorMessage = (error) => {
+  const responseError = error.response?.data?.error || error.response?.data?.message;
+  if (responseError) return responseError;
+
+  if (error.response?.status) {
+    return `Request failed with status ${error.response.status}`;
+  }
+
+  return error.message || 'Request failed';
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || (import.meta.env.DEV ? '/ideas' : 'https://brainbank-15ff.onrender.com/ideas'),
-  headers: { 'Content-Type': 'application/json' },
+  baseURL: API_BASE_URL,
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+  },
 });
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    error.message = getApiErrorMessage(error);
+    return Promise.reject(error);
+  }
+);
 
 // Ideas CRUD
 export const getAll = () => api.get('/').then(r => r.data);

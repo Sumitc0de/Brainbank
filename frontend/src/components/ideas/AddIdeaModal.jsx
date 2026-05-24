@@ -111,8 +111,8 @@ export default function AddIdeaModal() {
       });
       toast('Quest created! 🚀', 'success');
       reset();
-    } catch {
-      toast('Failed to create quest', 'error');
+    } catch (err) {
+      toast(err.message || 'Failed to create quest', 'error');
     }
     setSubmitting(false);
   };

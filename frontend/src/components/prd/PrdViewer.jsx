@@ -33,7 +33,7 @@ export default function PrdViewer({ idea }) {
   const regen = async (key) => {
     setBusy(key);
     try { await regeneratePrdSection(idea.id, key); toast('Regenerated', 'success'); }
-    catch { toast('Failed', 'error'); }
+    catch (err) { toast(err.message || 'Failed', 'error'); }
     setBusy(null);
   };
 

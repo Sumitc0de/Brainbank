@@ -39,20 +39,20 @@ export default function IdeaDetail({ idea, onClose }) {
   const save = async () => {
     setSaving(true);
     try { await updateIdea(idea.id, edit); toast('Saved', 'success'); }
-    catch { toast('Save failed', 'error'); }
+    catch (err) { toast(err.message || 'Save failed', 'error'); }
     setSaving(false);
   };
 
   const genPrd = async () => {
     setGenerating(true);
     try { await generatePrd(idea.id); toast('PRD generated!', 'success'); }
-    catch { toast('Generation failed', 'error'); }
+    catch (err) { toast(err.message || 'Generation failed', 'error'); }
     setGenerating(false);
   };
 
   const del = async () => {
     try { await deleteIdea(idea.id); toast('Deleted', 'info'); onClose(); }
-    catch { toast('Delete failed', 'error'); }
+    catch (err) { toast(err.message || 'Delete failed', 'error'); }
   };
 
   return (

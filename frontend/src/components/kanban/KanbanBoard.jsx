@@ -24,7 +24,7 @@ export default function KanbanBoard({ onIdeaClick }) {
     try {
       await updateIdeaStatus(r.draggableId, r.destination.droppableId);
       toast(`Moved to ${r.destination.droppableId}`, 'success');
-    } catch { toast('Move failed', 'error'); }
+    } catch (err) { toast(err.message || 'Move failed', 'error'); }
   };
 
   return (
