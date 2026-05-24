@@ -1,10 +1,11 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, Lightbulb, ListOrdered, FlaskConical, CheckSquare,
-  Trophy, Settings, Crown, X, Zap, Star,
+  Trophy, Settings, Crown, X, Zap, Star, LogOut,
 } from 'lucide-react';
 import useIdeaStore from '../../store/useIdeaStore';
 import useStatsStore from '../../store/useStatsStore';
+import useAuthStore from '../../store/useAuthStore';
 import ProgressBar from '../ui/ProgressBar';
 
 const NAV = [
@@ -115,6 +116,8 @@ export default function Sidebar({ isOpen, onClose }) {
    Inner content — shared between desktop & mobile panels
    ======================================================== */
 function SidebarContent({ activeView, onNav, badge, totalXP, level, xpInLevel, title }) {
+  const { user, logout } = useAuthStore();
+
   return (
     <>
       {/* ---- Logo ---- */}
@@ -123,7 +126,7 @@ function SidebarContent({ activeView, onNav, badge, totalXP, level, xpInLevel, t
           shadow-lg shadow-purple/20">
           <Crown size={16} className="text-white" />
         </div>
-        <span className="text-base font-black text-gradient tracking-tight">IdeasHub</span>
+        <span className="text-base font-black text-gradient tracking-tight">Brainbank</span>
       </div>
 
       {/* ---- Navigation ---- */}
@@ -191,18 +194,36 @@ function SidebarContent({ activeView, onNav, badge, totalXP, level, xpInLevel, t
       </div>
 
       {/* ---- User profile ---- */}
-      <div className="px-3 pb-4 shrink-0">
-        <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-surface-4/30 transition-colors cursor-pointer">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple to-blue
-            flex items-center justify-center text-xs font-bold text-white shrink-0">
-            F
+      <div className="px-3 pb-4 shrink-0 border-t border-edge/60 pt-4 mt-2">
+        <div className="flex items-center justify-between gap-2 px-1">
+          <div className="flex items-center gap-2.5 min-w-0 flex-1">
+            {user?.picture ? (
+              <img
+                src={user.picture}
+                alt={user.name}
+                referrerPolicy="no-referrer"
+                className="w-8 h-8 rounded-full object-cover shrink-0 border border-purple/20"
+              />
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple to-blue flex items-center justify-center text-xs font-bold text-white shrink-0">
+                {user?.name ? user.name[0].toUpperCase() : 'F'}
+              </div>
+            )}
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-bold text-fg truncate leading-none mb-1">{user?.name || 'Founder'}</p>
+              <p className="text-[9px] text-fg-3 truncate leading-none">{user?.email || 'builder@founderos.local'}</p>
+            </div>
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-bold text-fg truncate">Founder</p>
-            <p className="text-[11px] text-fg-3 flex items-center gap-1">
-              <Zap size={9} className="text-amber" /> Builder Guild
-            </p>
-          </div>
+          
+          <button
+            type="button"
+            onClick={logout}
+            title="Log Out"
+            aria-label="Log Out"
+            className="p-2 rounded-xl text-fg-3 hover:text-red hover:bg-red/10 cursor-pointer transition-all duration-200 shrink-0"
+          >
+            <LogOut size={15} />
+          </button>
         </div>
       </div>
     </>

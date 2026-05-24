@@ -25,7 +25,7 @@ export default function DashboardView() {
 
   if (ideas.length === 0 && !stats) {
     return (
-      <EmptyState title="Welcome to IdeasHub Quest Camp"
+      <EmptyState title="Welcome to Brainbank Quest Camp"
         description="Drop your first idea, score it, and begin the build adventure."
         actionLabel="Start First Quest ✨"
         action={() => setAddModalOpen(true)} />

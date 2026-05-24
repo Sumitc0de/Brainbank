@@ -16,7 +16,7 @@ function getSectionContent(prd, section) {
 
 export async function generatePrdForIdea(req, res) {
   try {
-    const idea = await Idea.findOne({ id: req.params.id });
+    const idea = await Idea.findOne({ id: req.params.id, user: req.user._id });
     if (!idea) return res.status(404).json({ success: false, error: 'Idea not found' });
 
     const { prd } = await generateIdeaPrd({
@@ -47,7 +47,7 @@ export async function updatePRDSection(req, res) {
       return res.status(400).json({ success: false, error: 'Unsupported PRD section' });
     }
 
-    const idea = await Idea.findOne({ id: req.params.id });
+    const idea = await Idea.findOne({ id: req.params.id, user: req.user._id });
     if (!idea) return res.status(404).json({ success: false, error: 'Idea not found' });
 
     idea.prd = mergePrdPayload(idea.prd, {
@@ -71,7 +71,7 @@ export async function regeneratePRDSection(req, res) {
       return res.status(400).json({ success: false, error: 'Unsupported PRD section' });
     }
 
-    const idea = await Idea.findOne({ id: req.params.id });
+    const idea = await Idea.findOne({ id: req.params.id, user: req.user._id });
     if (!idea) return res.status(404).json({ success: false, error: 'Idea not found' });
 
     const result = await regenerateIdeaPrdSection({

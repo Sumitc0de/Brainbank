@@ -6,11 +6,11 @@ function calculateScore(scores) {
   return Math.round((((impact + demand + money) / (effort + 1)) * (skill / 10)) * 100) / 100;
 }
 
-async function autoPromote() {
-  const buildingCount = await Idea.countDocuments({ status: 'building' });
+async function autoPromote(userId) {
+  const buildingCount = await Idea.countDocuments({ status: 'building', user: userId });
   if (buildingCount < 2) {
     const slots = 2 - buildingCount;
-    const next = await Idea.find({ status: 'queued' }).sort({ 'scores.total': -1 }).limit(slots);
+    const next = await Idea.find({ status: 'queued', user: userId }).sort({ 'scores.total': -1 }).limit(slots);
     for (const idea of next) {
       idea.status = 'building';
       idea.lastActiveAt = new Date();
@@ -19,8 +19,8 @@ async function autoPromote() {
   }
 }
 
-async function resortQueue() {
-  const queued = await Idea.find({ status: 'queued' }).sort({ 'scores.total': -1 });
+async function resortQueue(userId) {
+  const queued = await Idea.find({ status: 'queued', user: userId }).sort({ 'scores.total': -1 });
   for (let i = 0; i < queued.length; i += 1) {
     queued[i].queuePosition = i + 1;
     await queued[i].save();
@@ -64,6 +64,7 @@ export async function createIdea(req, res) {
     scores.total = calculateScore(scores);
 
     const idea = new Idea({
+      user: req.user._id,
       title,
       keywords: Array.isArray(keywords) ? keywords : [],
       description: String(description).trim() || prd.problemStatement || '',
@@ -79,8 +80,8 @@ export async function createIdea(req, res) {
 
     await idea.save();
     if (idea.status === 'queued') {
-      await resortQueue();
-      await autoPromote();
+      await resortQueue(req.user._id);
+      await autoPromote(req.user._id);
     }
 
     res.status(201).json({ success: true, data: idea });
@@ -92,7 +93,7 @@ export async function createIdea(req, res) {
 // GET ALL
 export async function getAllIdeas(req, res) {
   try {
-    const ideas = await Idea.find().sort({ 'scores.total': -1 });
+    const ideas = await Idea.find({ user: req.user._id }).sort({ 'scores.total': -1 });
     res.json({ success: true, data: ideas });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -102,7 +103,7 @@ export async function getAllIdeas(req, res) {
 // GET ONE
 export async function getIdeaById(req, res) {
   try {
-    const idea = await Idea.findOne({ id: req.params.id });
+    const idea = await Idea.findOne({ id: req.params.id, user: req.user._id });
     if (!idea) return res.status(404).json({ success: false, error: 'Idea not found' });
 
     idea.lastActiveAt = new Date();
@@ -116,7 +117,7 @@ export async function getIdeaById(req, res) {
 // UPDATE
 export async function updateIdea(req, res) {
   try {
-    const idea = await Idea.findOne({ id: req.params.id });
+    const idea = await Idea.findOne({ id: req.params.id, user: req.user._id });
     if (!idea) return res.status(404).json({ success: false, error: 'Idea not found' });
 
     const oldStatus = idea.status;
@@ -127,7 +128,7 @@ export async function updateIdea(req, res) {
     }
 
     if (updateData.status === 'building' && oldStatus !== 'building') {
-      const count = await Idea.countDocuments({ status: 'building', _id: { $ne: idea._id } });
+      const count = await Idea.countDocuments({ status: 'building', user: req.user._id, _id: { $ne: idea._id } });
       if (count >= 2) return res.status(400).json({ success: false, error: 'Max 2 ideas in Building.' });
     }
 
@@ -145,10 +146,10 @@ export async function updateIdea(req, res) {
 
     await idea.save();
 
-    if (updateData.status === 'completed' && oldStatus !== 'completed') await autoPromote();
-    await resortQueue();
+    if (updateData.status === 'completed' && oldStatus !== 'completed') await autoPromote(req.user._id);
+    await resortQueue(req.user._id);
 
-    const updated = await Idea.findOne({ id: req.params.id });
+    const updated = await Idea.findOne({ id: req.params.id, user: req.user._id });
     res.json({ success: true, data: updated });
   } catch (err) {
     res.status(400).json({ success: false, error: err.message });
@@ -158,10 +159,10 @@ export async function updateIdea(req, res) {
 // DELETE
 export async function deleteIdea(req, res) {
   try {
-    const idea = await Idea.findOneAndDelete({ id: req.params.id });
+    const idea = await Idea.findOneAndDelete({ id: req.params.id, user: req.user._id });
     if (!idea) return res.status(404).json({ success: false, error: 'Idea not found' });
-    if (idea.status === 'building') await autoPromote();
-    await resortQueue();
+    if (idea.status === 'building') await autoPromote(req.user._id);
+    await resortQueue(req.user._id);
     res.json({ success: true, data: idea });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -173,6 +174,7 @@ export async function getStaleIdeas(req, res) {
   try {
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     const stale = await Idea.find({
+      user: req.user._id,
       status: { $in: ['queued', 'building'] },
       lastActiveAt: { $lt: sevenDaysAgo },
     }).sort({ lastActiveAt: 1 });
@@ -186,11 +188,11 @@ export async function getStaleIdeas(req, res) {
 export async function updateIdeaStatus(req, res) {
   try {
     const { id, status } = req.body;
-    const idea = await Idea.findOne({ id });
+    const idea = await Idea.findOne({ id, user: req.user._id });
     if (!idea) return res.status(404).json({ success: false, error: 'Idea not found' });
 
     if (status === 'building' && idea.status !== 'building') {
-      const count = await Idea.countDocuments({ status: 'building', _id: { $ne: idea._id } });
+      const count = await Idea.countDocuments({ status: 'building', user: req.user._id, _id: { $ne: idea._id } });
       if (count >= 2) return res.status(400).json({ success: false, error: 'Max 2 ideas in Building.' });
     }
 
@@ -199,10 +201,10 @@ export async function updateIdeaStatus(req, res) {
     if (status === 'completed') idea.xp = (idea.xp || 0) + 50;
     await idea.save();
 
-    if (status === 'completed') await autoPromote();
-    await resortQueue();
+    if (status === 'completed') await autoPromote(req.user._id);
+    await resortQueue(req.user._id);
 
-    const allIdeas = await Idea.find().sort({ 'scores.total': -1 });
+    const allIdeas = await Idea.find({ user: req.user._id }).sort({ 'scores.total': -1 });
     res.json({ success: true, data: allIdeas });
   } catch (err) {
     res.status(400).json({ success: false, error: err.message });
@@ -212,7 +214,7 @@ export async function updateIdeaStatus(req, res) {
 // STATS
 export async function getStats(req, res) {
   try {
-    const ideas = await Idea.find();
+    const ideas = await Idea.find({ user: req.user._id });
     const totalXP = ideas.reduce((sum, item) => sum + (item.xp || 0), 0);
     const level = Math.floor(totalXP / 100) + 1;
     const totalIdeas = ideas.length;

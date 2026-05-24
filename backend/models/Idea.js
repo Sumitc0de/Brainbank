@@ -59,6 +59,7 @@ const attachmentSchema = new mongoose.Schema(
 const ideaSchema = new mongoose.Schema(
   {
     id: { type: String, default: () => uuidv4(), unique: true, index: true },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
     title: { type: String, required: true, trim: true, maxlength: 200 },
     keywords: { type: [String], default: [] },
     description: { type: String, default: '', trim: true, maxlength: 2000 },

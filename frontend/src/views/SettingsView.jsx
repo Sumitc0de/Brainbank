@@ -173,10 +173,10 @@ export default function SettingsView() {
           transition={{ delay: 0.2 }}
           className="rounded-xl bg-surface-2/65 border border-edge overflow-hidden"
         >
-          <SectionHeader icon={Info} title="About IdeasHub 🏰" tone="text-amber" />
+          <SectionHeader icon={Info} title="About Brainbank 🏰" tone="text-amber" />
           <div className="p-5 space-y-4">
             <p className="text-sm text-fg-2 leading-relaxed">
-              IdeasHub is a gamified founder workspace for collecting ideas, prioritizing quests,
+              Brainbank is a gamified founder workspace for collecting ideas, prioritizing quests,
               tracking research, earning XP, and generating PRDs.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">

@@ -29,6 +29,28 @@ const uploadApi = axios.create({
   headers: { Accept: 'application/json' },
 });
 
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('brainbank_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+uploadApi.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('brainbank_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {

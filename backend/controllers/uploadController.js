@@ -16,7 +16,7 @@ function buildAttachment(file, type) {
   };
 }
 
-async function attachToIdea({ ideaId, file, type, res }) {
+async function attachToIdea({ ideaId, file, type, userId, res }) {
   assertCloudinaryConfig();
 
   if (!ideaId) {
@@ -28,7 +28,7 @@ async function attachToIdea({ ideaId, file, type, res }) {
   }
 
   const attachment = buildAttachment(file, type);
-  const idea = await Idea.findOne({ id: ideaId });
+  const idea = await Idea.findOne({ id: ideaId, user: userId });
 
   if (!idea) {
     const resourceType = attachment.url?.includes('/raw/') ? 'raw' : 'image';
@@ -52,7 +52,7 @@ async function attachToIdea({ ideaId, file, type, res }) {
 
 export async function uploadIdeaImage(req, res) {
   try {
-    await attachToIdea({ ideaId: req.body.ideaId, file: req.file, type: 'image', res });
+    await attachToIdea({ ideaId: req.body.ideaId, file: req.file, type: 'image', userId: req.user._id, res });
   } catch (err) {
     res.status(400).json({ success: false, error: err.message });
   }
@@ -60,7 +60,7 @@ export async function uploadIdeaImage(req, res) {
 
 export async function uploadIdeaPdf(req, res) {
   try {
-    await attachToIdea({ ideaId: req.body.ideaId, file: req.file, type: 'pdf', res });
+    await attachToIdea({ ideaId: req.body.ideaId, file: req.file, type: 'pdf', userId: req.user._id, res });
   } catch (err) {
     res.status(400).json({ success: false, error: err.message });
   }
@@ -75,7 +75,7 @@ export async function deleteUpload(req, res) {
       return res.status(400).json({ success: false, error: 'public_id is required.' });
     }
 
-    const idea = await Idea.findOne({ 'attachments.public_id': publicId });
+    const idea = await Idea.findOne({ 'attachments.public_id': publicId, user: req.user._id });
     if (!idea) {
       return res.status(404).json({ success: false, error: 'Attachment not found' });
     }

@@ -4,6 +4,8 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import ideaRoutes from './routes/ideaRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import authMiddleware from './middleware/authMiddleware.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -61,8 +63,9 @@ const requireDB = async (req, res, next) => {
 };
 
 // Routes
-app.use('/ideas', requireDB, ideaRoutes);
-app.use('/api/upload', requireDB, uploadRoutes);
+app.use('/api/auth', requireDB, authRoutes);
+app.use('/ideas', requireDB, authMiddleware, ideaRoutes);
+app.use('/api/upload', requireDB, authMiddleware, uploadRoutes);
 
 app.use((err, req, res, next) => {
   if (!err) return next();
