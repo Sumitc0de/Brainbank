@@ -76,13 +76,21 @@ const useIdeaStore = create((set, get) => ({
     }
   },
 
-  // Update status (drag & drop)
+  // Update status (drag & drop) with optimistic updates
   updateIdeaStatus: async (id, status) => {
+    const prevIdeas = get().ideas;
+
+    // Optimistically update the status of the item locally
+    set((state) => ({
+      ideas: state.ideas.map((i) => (i.id === id ? { ...i, status } : i)),
+    }));
+
     try {
       const res = await api.updateStatus(id, status);
       set({ ideas: res.data || [] });
     } catch (err) {
-      set({ error: err.message });
+      // Rollback on error
+      set({ ideas: prevIdeas, error: err.message });
       throw err;
     }
   },

@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, Lightbulb, ListOrdered, FlaskConical, CheckSquare,
-  Trophy, Settings, Crown, X, Zap, Star, LogOut, Sun, Moon,
+  Trophy, Settings, X, Zap, Star, LogOut, Sun, Moon,
 } from 'lucide-react';
 import useIdeaStore from '../../store/useIdeaStore';
 import useStatsStore from '../../store/useStatsStore';
@@ -121,11 +121,12 @@ function SidebarContent({ activeView, onNav, badge, totalXP, level, xpInLevel, t
   return (
     <>
       {/* ---- Logo ---- */}
-      <div className="flex items-center gap-3 px-5 h-16 shrink-0 border-b border-edge">
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-purple via-purple-soft to-green flex items-center justify-center
-          shadow-lg shadow-purple/20">
-          <Crown size={16} className="text-white" />
-        </div>
+      <div className="flex items-center gap-2.5 px-5 h-16 shrink-0 border-b border-edge">
+        <img
+          src={theme === 'dark' ? '/logo.png' : '/logo1.png'}
+          alt="Brainbank Logo"
+          className="w-9 h-9 object-contain rounded-xl shadow-md"
+        />
         <span className="text-base font-black text-gradient tracking-tight">Brainbank</span>
       </div>
 

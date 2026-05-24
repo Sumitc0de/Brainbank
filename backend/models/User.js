@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema(
     googleId: {
       type: String,
       unique: true,
-      sparse: true, // Allows null/missing values for mock developers while enforcing uniqueness on others
+      sparse: true,
       index: true,
     },
     email: {
@@ -23,6 +23,22 @@ const userSchema = new mongoose.Schema(
     picture: {
       type: String,
       default: '',
+    },
+    // Role-based access preparation
+    role: {
+      type: String,
+      enum: ['user', 'admin', 'premium'],
+      default: 'user',
+    },
+    // Token version — increment to invalidate all issued tokens for this user
+    tokenVersion: {
+      type: Number,
+      default: 0,
+    },
+    // Hash of the current valid refresh token (for server-side validation)
+    refreshTokenHash: {
+      type: String,
+      default: null,
     },
     lastLoginAt: {
       type: Date,

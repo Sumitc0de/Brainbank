@@ -9,8 +9,8 @@ const useAuthStore = create((set, get) => ({
       return null;
     }
   })(),
-  token: localStorage.getItem('brainbank_token') || null,
-  loading: false,
+  isAuthenticated: false,
+  loading: true, // Start as true — session check happens on mount
   error: null,
   theme: localStorage.getItem('brainbank_theme') || 'light',
   themeStyle: localStorage.getItem('brainbank_theme_style') || 'sunset-quest',
@@ -49,7 +49,6 @@ const useAuthStore = create((set, get) => ({
       document.documentElement.classList.remove('dark');
     }
 
-    // sync theme style
     const classes = Array.from(document.documentElement.classList);
     classes.forEach(cls => {
       if (cls.startsWith('theme-')) {
@@ -58,10 +57,8 @@ const useAuthStore = create((set, get) => ({
     });
     document.documentElement.classList.add(`theme-${themeStyle}`);
 
-    // sync glow intensity
     document.documentElement.style.setProperty('--glow-opacity', (glowIntensity / 100).toFixed(2));
 
-    // sync reduce animations
     if (reduceAnimations) {
       document.documentElement.classList.add('reduce-animations');
     } else {
@@ -113,14 +110,44 @@ const useAuthStore = create((set, get) => ({
     });
   },
 
+  // ═══════════════════════════════════════════════════════════
+  //  SESSION CHECK — called on app mount
+  // ═══════════════════════════════════════════════════════════
+  checkSession: async () => {
+    set({ loading: true });
+    try {
+      const res = await authApi.getCurrentUser();
+      const user = res.user;
+      localStorage.setItem('brainbank_user', JSON.stringify(user));
+      set({ user, isAuthenticated: true, loading: false, error: null });
+      return true;
+    } catch {
+      // Session invalid — try refresh
+      try {
+        const refreshRes = await authApi.refreshToken();
+        const user = refreshRes.user;
+        localStorage.setItem('brainbank_user', JSON.stringify(user));
+        set({ user, isAuthenticated: true, loading: false, error: null });
+        return true;
+      } catch {
+        // No valid session
+        localStorage.removeItem('brainbank_user');
+        set({ user: null, isAuthenticated: false, loading: false, error: null });
+        return false;
+      }
+    }
+  },
+
+  // ═══════════════════════════════════════════════════════════
+  //  LOGIN METHODS
+  // ═══════════════════════════════════════════════════════════
   loginWithGoogle: async (googleToken) => {
     set({ loading: true, error: null });
     try {
       const res = await authApi.loginWithGoogle(googleToken);
-      const { token, user } = res;
-      localStorage.setItem('brainbank_token', token);
+      const { user } = res;
       localStorage.setItem('brainbank_user', JSON.stringify(user));
-      set({ token, user, loading: false });
+      set({ user, isAuthenticated: true, loading: false });
       return res;
     } catch (err) {
       const errMsg = err.response?.data?.error || err.message || 'Google Login failed.';
@@ -133,10 +160,9 @@ const useAuthStore = create((set, get) => ({
     set({ loading: true, error: null });
     try {
       const res = await authApi.bypassWithMock();
-      const { token, user } = res;
-      localStorage.setItem('brainbank_token', token);
+      const { user } = res;
       localStorage.setItem('brainbank_user', JSON.stringify(user));
-      set({ token, user, loading: false });
+      set({ user, isAuthenticated: true, loading: false });
       return res;
     } catch (err) {
       const errMsg = err.response?.data?.error || err.message || 'Developer bypass failed.';
@@ -145,11 +171,29 @@ const useAuthStore = create((set, get) => ({
     }
   },
 
-  logout: () => {
-    localStorage.removeItem('brainbank_token');
+  // ═══════════════════════════════════════════════════════════
+  //  LOGOUT — clears server cookies + local state
+  // ═══════════════════════════════════════════════════════════
+  logout: async () => {
+    try {
+      await authApi.logoutFromServer();
+    } catch {
+      // Server logout failed — still clear local state
+    }
     localStorage.removeItem('brainbank_user');
-    set({ token: null, user: null, error: null });
+    set({ user: null, isAuthenticated: false, error: null });
   },
 }));
+
+// ── Listen for session expiry events from API interceptor ───
+if (typeof window !== 'undefined') {
+  window.addEventListener('brainbank:session-expired', () => {
+    const store = useAuthStore.getState();
+    if (store.isAuthenticated) {
+      localStorage.removeItem('brainbank_user');
+      useAuthStore.setState({ user: null, isAuthenticated: false, error: null });
+    }
+  });
+}
 
 export default useAuthStore;

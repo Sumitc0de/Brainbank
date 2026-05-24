@@ -14,7 +14,9 @@ frontend/dist-ssr/
 .env.development.local
 .env.test.local
 .env.production.local
-backend/.env
+**/.env
+**/.env.local
+**/.env.*.local
 
 # Logs
 logs

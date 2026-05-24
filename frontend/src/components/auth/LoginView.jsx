@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import { motion } from 'framer-motion';
 import { 
-  Sparkles, Terminal, LogIn, Cpu, Award, HelpCircle, Crown, 
+  Sparkles, Terminal, LogIn, Cpu, Award, HelpCircle, 
   Star, Layers, CheckCircle2, ChevronRight, MessageSquare,
   ShieldCheck, Zap, Lock, DollarSign, ArrowRight, ArrowDown,
   UploadCloud, FileText, Image as ImageIcon, Download, 
@@ -44,7 +44,7 @@ const FEATURES = [
   {
     title: "Upload Logo Designs",
     desc: "Organize branding assets, vector logos, and SVG assets side-by-side with your primary product plans.",
-    icon: Crown,
+    icon: Award,
     color: "from-amber to-purple-soft",
     badge: "Identity",
   },
@@ -103,7 +103,7 @@ const REVIEWS = [
 ];
 
 const TIMELINE_STAGES = [
-  { name: "Capture", icon: Crown, desc: "Log ideas instantly before they fade.", glow: "shadow-purple/10 text-purple" },
+  { name: "Capture", icon: Sparkles, desc: "Log ideas instantly before they fade.", glow: "shadow-purple/10 text-purple" },
   { name: "Research", icon: Search, desc: "Map competitors and validate markets.", glow: "shadow-blue/10 text-blue" },
   { name: "Plan", icon: Layers, desc: "Prioritize features with ICE models.", glow: "shadow-amber/10 text-amber" },
   { name: "Build", icon: Cpu, desc: "Draft AI PRDs and track active tasks.", glow: "shadow-green/10 text-green" },
@@ -217,10 +217,12 @@ export default function LoginView() {
       {/* ================= HEADER NAVBAR ================= */}
       <header className="sticky top-0 z-50 w-full border-b border-edge/60 bg-surface-2/80 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8.5 h-8.5 rounded-lg bg-gradient-to-tr from-purple via-purple-soft to-green flex items-center justify-center shadow-lg shadow-purple/10">
-              <Crown size={14} className="text-white" />
-            </div>
+          <div className="flex items-center gap-2.5">
+            <img
+              src={theme === 'dark' ? '/logo.png' : '/logo1.png'}
+              alt="Brainbank Logo"
+              className="w-8.5 h-8.5 object-contain rounded-lg shadow-sm"
+            />
             <span className="text-sm font-black tracking-tight bg-gradient-to-r from-fg to-fg-2 bg-clip-text text-transparent">Brainbank</span>
           </div>
 
@@ -320,7 +322,7 @@ export default function LoginView() {
               {/* Dashboard header */}
               <div className="flex items-center justify-between mb-4 pb-3 border-b border-edge/60">
                 <div className="flex items-center gap-2">
-                  <Crown size={15} className="text-purple animate-pulse" />
+                  <Star size={15} className="text-purple animate-pulse" />
                   <span className="text-[11px] font-black tracking-wider text-fg uppercase">Brainbank OS</span>
                 </div>
                 <span className="text-[9px] px-2 py-0.5 rounded-md bg-purple/10 border border-purple/20 text-purple font-bold uppercase">Level 4: Builder</span>
@@ -998,7 +1000,7 @@ export default function LoginView() {
               <div className="space-y-5">
                 <div className="space-y-1">
                   <h3 id="rjlwm8" className="text-lg font-black text-fg flex items-center gap-1.5">
-                    Ultra <Crown size={14} className="text-purple-soft animate-bounce" />
+                    Ultra <Zap size={14} className="text-purple-soft animate-bounce" />
                   </h3>
                   <p id="6jlwm1" className="text-[11px] text-fg-2 leading-relaxed">The complete AI founder operating system for serious builders.</p>
                 </div>
@@ -1130,7 +1132,7 @@ export default function LoginView() {
 
           <div className="max-w-xl mx-auto space-y-3">
             <div className="inline-flex h-11 w-11 rounded-2xl bg-gradient-to-tr from-purple via-purple-soft to-green flex items-center justify-center text-white font-extrabold text-xl shadow-lg shadow-purple/20 mx-auto">
-              <Crown size={18} className="text-white" />
+              <Award size={18} className="text-white" />
             </div>
             <h2 className="text-2xl font-extrabold text-fg">Ready to build your next venture?</h2>
             <p className="text-xs text-fg-2 leading-relaxed">

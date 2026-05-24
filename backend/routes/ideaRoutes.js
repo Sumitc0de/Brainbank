@@ -14,8 +14,20 @@ import {
   regeneratePRDSection,
   updatePRDSection,
 } from '../controllers/ideaPrdController.js';
+import { apiLimiter } from '../middleware/rateLimiter.js';
+import {
+  validate,
+  createIdeaSchema,
+  updateIdeaSchema,
+  updateStatusSchema,
+  updatePrdSectionSchema,
+  regeneratePrdSectionSchema,
+} from '../middleware/validate.js';
 
 const router = Router();
+
+// Apply rate limiter to all idea routes
+router.use(apiLimiter);
 
 // Stats
 router.get('/stats', getStats);
@@ -24,18 +36,18 @@ router.get('/stats', getStats);
 router.get('/stale', getStaleIdeas);
 
 // CRUD
-router.post('/', createIdea);
+router.post('/', validate(createIdeaSchema), createIdea);
 router.get('/', getAllIdeas);
 router.get('/:id', getIdeaById);
-router.put('/:id', updateIdea);
+router.put('/:id', validate(updateIdeaSchema), updateIdea);
 router.delete('/:id', deleteIdea);
 
 // PRD
 router.post('/:id/generate-prd', generatePrdForIdea);
-router.patch('/:id/prd', updatePRDSection);
-router.post('/:id/regenerate', regeneratePRDSection);
+router.patch('/:id/prd', validate(updatePrdSectionSchema), updatePRDSection);
+router.post('/:id/regenerate', validate(regeneratePrdSectionSchema), regeneratePRDSection);
 
 // Status (drag & drop)
-router.patch('/status', updateIdeaStatus);
+router.patch('/status', validate(updateStatusSchema), updateIdeaStatus);
 
 export default router;

@@ -58,14 +58,16 @@ export default function IdeaDetail({ idea, onClose }) {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex justify-end">
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
 
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
       <motion.div
-        initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
-        transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-        className="relative w-full max-w-xl h-full overflow-y-auto bg-surface-1 border-l border-edge"
+        initial={{ scale: 0.95, opacity: 0, y: 15 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.95, opacity: 0, y: 15 }}
+        transition={{ type: 'spring', damping: 25, stiffness: 250 }}
+        className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto bg-surface-1 border border-edge rounded-2xl shadow-elevated"
       >
         {/* Top bar */}
         <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4

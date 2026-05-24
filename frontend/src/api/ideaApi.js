@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { refreshToken as refreshAuthToken } from './authApi.js';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL
   || (import.meta.env.DEV ? '/ideas' : 'https://brainbank-15ff.onrender.com/ideas');
@@ -22,39 +23,85 @@ const api = axios.create({
     Accept: 'application/json',
     'Content-Type': 'application/json',
   },
+  withCredentials: true,  // Send HTTP-only cookies
 });
 
 const uploadApi = axios.create({
   baseURL: `${API_ROOT_URL}/api/upload`,
   headers: { Accept: 'application/json' },
+  withCredentials: true,  // Send HTTP-only cookies
 });
 
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('brainbank_token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+// ── 401 interceptor with automatic token refresh ────────────
+let isRefreshing = false;
+let failedQueue = [];
 
-uploadApi.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('brainbank_token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+function processQueue(error) {
+  failedQueue.forEach(({ resolve, reject }) => {
+    if (error) {
+      reject(error);
+    } else {
+      resolve();
     }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+  });
+  failedQueue = [];
+}
 
+function create401Interceptor(instance) {
+  instance.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+      const originalRequest = error.config;
+
+      // If 401 and not already retried
+      if (error.response?.status === 401 && !originalRequest._retry) {
+        // TOKEN_EXPIRED means we should try refreshing
+        const code = error.response?.data?.code;
+        if (code === 'TOKEN_EXPIRED' || code === 'NO_TOKEN') {
+          if (isRefreshing) {
+            // Queue this request until refresh completes
+            return new Promise((resolve, reject) => {
+              failedQueue.push({ resolve, reject });
+            }).then(() => instance(originalRequest));
+          }
+
+          originalRequest._retry = true;
+          isRefreshing = true;
+
+          try {
+            await refreshAuthToken();
+            processQueue(null);
+            return instance(originalRequest);
+          } catch (refreshError) {
+            processQueue(refreshError);
+            // Dispatch logout event — the store will handle it
+            window.dispatchEvent(new CustomEvent('brainbank:session-expired'));
+            return Promise.reject(refreshError);
+          } finally {
+            isRefreshing = false;
+          }
+        }
+
+        // Other 401s (INVALID_TOKEN, TOKEN_VERSION_MISMATCH) → logout immediately
+        window.dispatchEvent(new CustomEvent('brainbank:session-expired'));
+      }
+
+      error.message = getApiErrorMessage(error);
+      return Promise.reject(error);
+    }
+  );
+}
+
+create401Interceptor(api);
+create401Interceptor(uploadApi);
+
+// ── Error message interceptor for non-401 errors ────────────
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    error.message = getApiErrorMessage(error);
+    if (error.response?.status !== 401) {
+      error.message = getApiErrorMessage(error);
+    }
     return Promise.reject(error);
   }
 );
@@ -62,7 +109,9 @@ api.interceptors.response.use(
 uploadApi.interceptors.response.use(
   (response) => response,
   (error) => {
-    error.message = getApiErrorMessage(error);
+    if (error.response?.status !== 401) {
+      error.message = getApiErrorMessage(error);
+    }
     return Promise.reject(error);
   }
 );
