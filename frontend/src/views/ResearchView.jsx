@@ -56,22 +56,28 @@ export default function ResearchView() {
       <div className="space-y-2">
         {items.map((r) => (
           <motion.div key={r.id} layout initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }}
-            className={`flex items-center gap-3 p-4 rounded-xl border transition-all group
+            className={`flex items-start gap-3 p-4 rounded-xl border transition-all group
               ${r.status === 'completed'
                 ? 'bg-green/5 border-green/15'
                 : 'bg-surface-2/60 border-edge hover:border-cyan/25'}`}>
             <button onClick={() => toggleResearch(selectedIdeaId, r.id)}
-              className={`shrink-0 cursor-pointer ${r.status === 'completed' ? 'text-green' : 'text-fg-4'}`}>
+              className={`mt-0.5 shrink-0 cursor-pointer ${r.status === 'completed' ? 'text-green' : 'text-fg-4'}`}>
               {r.status === 'completed' ? <Check size={17} /> : <Circle size={17} />}
             </button>
-            <span className={`text-sm flex-1 ${r.status === 'completed' ? 'text-fg-3 line-through' : 'text-fg'}`}>
-              {r.title}
-            </span>
-            <span className="text-[10px] text-fg-4 px-1.5 py-0.5 rounded bg-surface-4/40">{r.category}</span>
-            <button onClick={() => { deleteResearch(selectedIdeaId, r.id); toast('Removed', 'info'); }}
-              className="opacity-0 group-hover:opacity-100 text-fg-4 hover:text-red transition-all cursor-pointer">
-              <Trash2 size={13} />
-            </button>
+            <div className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <span className={`text-sm font-semibold break-words ${r.status === 'completed' ? 'text-fg-3 line-through font-normal' : 'text-fg'}`}>
+                {r.title}
+              </span>
+              <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto">
+                <span className="text-[9px] font-bold uppercase tracking-wider text-fg-3 px-2 py-0.5 rounded bg-surface-4/60 border border-edge/30">
+                  {r.category}
+                </span>
+                <button onClick={() => { deleteResearch(selectedIdeaId, r.id); toast('Removed', 'info'); }}
+                  className="text-fg-4 hover:text-red transition-all cursor-pointer p-1 rounded-lg hover:bg-red/10 sm:opacity-0 sm:group-hover:opacity-100">
+                  <Trash2 size={13} />
+                </button>
+              </div>
+            </div>
           </motion.div>
         ))}
       </div>
