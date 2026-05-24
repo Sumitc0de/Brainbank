@@ -62,13 +62,22 @@ const requireDB = async (req, res, next) => {
 // Routes
 app.use('/ideas', requireDB, ideaRoutes);
 
+const startServer = async () => {
+  try {
+    await connectDB();
+  } catch (err) {
+    console.error('MongoDB startup connection failed:', err.message);
+    console.log('Server will start, and /ideas routes will retry the database connection per request.');
+  }
+
+  app.listen(PORT, () => {
+    console.log(`FounderOS backend running on port ${PORT}`);
+  });
+};
+
 // Start server locally or initialize on Vercel
 if (!process.env.VERCEL) {
-  connectDB().finally(() => {
-    app.listen(PORT, () => {
-      console.log(`FounderOS backend running on port ${PORT}`);
-    });
-  });
+  startServer();
 } else {
   // On Vercel, start the connection immediately (runs once when container boots)
   connectDB().catch((err) => console.error('MongoDB Atlas pre-connect failed:', err.message));
