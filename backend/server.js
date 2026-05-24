@@ -51,13 +51,20 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:4173',
   'http://127.0.0.1:5173',
+  'https://brainbank-one.vercel.app', // Production frontend fallback
 ];
 
 // Add production origins from env
 if (process.env.ALLOWED_ORIGINS) {
   process.env.ALLOWED_ORIGINS.split(',').forEach((origin) => {
-    const trimmed = origin.trim();
-    if (trimmed) allowedOrigins.push(trimmed);
+    let trimmed = origin.trim();
+    if (trimmed) {
+      // Remove trailing slash if present to avoid CORS failures
+      if (trimmed.endsWith('/')) {
+        trimmed = trimmed.slice(0, -1);
+      }
+      allowedOrigins.push(trimmed);
+    }
   });
 }
 
@@ -65,7 +72,17 @@ app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (mobile, Postman, server-to-server)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
+    
+    // Normalize requested origin to prevent trailing slash mismatch
+    let normalizedOrigin = origin;
+    if (normalizedOrigin.endsWith('/')) {
+      normalizedOrigin = normalizedOrigin.slice(0, -1);
+    }
+
+    if (allowedOrigins.includes(normalizedOrigin)) {
+      return callback(null, true);
+    }
+    
     callback(new Error(`CORS: origin ${origin} not allowed.`));
   },
   credentials: true,
