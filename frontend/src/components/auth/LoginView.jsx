@@ -6,7 +6,7 @@ import { toast } from '../ui/Toast';
 
 export default function LoginView() {
   const { loginWithGoogle, bypassWithMock, loading, error: authError } = useAuthStore();
-  const [showDeveloperBypass, setShowDeveloperBypass] = useState(true);
+  const [showDeveloperBypass, setShowDeveloperBypass] = useState(false);
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
@@ -106,16 +106,16 @@ export default function LoginView() {
             {/* Auth Actions */}
             <div className="space-y-4 pt-2">
               
-              {/* Google Login Provider container with Light Theme styling */}
-              <div className="flex justify-center w-full py-1.5 border border-edge rounded-xl bg-surface-0 hover:bg-surface-1 transition-colors cursor-pointer relative group">
+              {/* Google Login Provider */}
+              <div className="flex justify-center w-full">
                 <GoogleLogin
                   onSuccess={handleGoogleSuccess}
                   onError={() => toast('Google Sign-In was cancelled or failed.', 'error')}
                   theme="outline"
                   size="large"
                   text="signin_with"
-                  shape="rectangular"
-                  width="100%"
+                  shape="pill"
+                  width="320px"
                 />
               </div>
 
