@@ -43,10 +43,10 @@ export default function IdeasView() {
       {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-3 mb-6">
         {/* Filter pills */}
-        <div className="flex items-center gap-1 p-1 rounded-xl bg-surface-2/60 border border-edge">
+        <div className="flex items-center gap-1 p-1 rounded-xl bg-surface-2/60 border border-edge overflow-x-auto max-w-full no-scrollbar whitespace-nowrap">
           {FILTERS.map((f) => (
             <button key={f} onClick={() => setFilter(f)}
-              className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer
+              className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer shrink-0
                 ${filter === f
                   ? 'bg-purple/15 text-purple-soft border border-purple/25'
                   : 'text-fg-3 hover:text-fg hover:bg-surface-4/40 border border-transparent'}`}>
