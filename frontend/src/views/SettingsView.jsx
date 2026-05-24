@@ -22,12 +22,40 @@ const LEVEL_TITLES = ['Beginner', 'Thinker', 'Builder', 'Launcher', 'Founder', '
 
 const PRESETS = [
   {
+    id: 'sunlit-quest',
+    name: 'Sunlit Quest',
+    desc: 'Warm playful sands & copper gold',
+    colors: ['#fff7df', '#ead7a8', '#df2046', '#213b1f'],
+    accent: 'border-l-[#df2046]',
+    circle: 'bg-[#df2046]',
+    mode: 'light'
+  },
+  {
+    id: 'nordic-snow',
+    name: 'Nordic Snow',
+    desc: 'Scandinavian slate & icy blue',
+    colors: ['#f8fafc', '#cbd5e1', '#3b82f6', '#0f172a'],
+    accent: 'border-l-[#3b82f6]',
+    circle: 'bg-[#3b82f6]',
+    mode: 'light'
+  },
+  {
+    id: 'solarized-garden',
+    name: 'Solarized Garden',
+    desc: 'Warm olive cream & organic sage',
+    colors: ['#f4f4f0', '#dfdfd0', '#2d6f29', '#1d331b'],
+    accent: 'border-l-[#2d6f29]',
+    circle: 'bg-[#2d6f29]',
+    mode: 'light'
+  },
+  {
     id: 'sunset-quest',
     name: 'Sunset Quest',
     desc: 'Volcanic stone & copper glow',
     colors: ['#120f0e', '#2e2624', '#f97316', '#f5f5f4'],
     accent: 'border-l-[#f97316]',
-    circle: 'bg-[#f97316]'
+    circle: 'bg-[#f97316]',
+    mode: 'dark'
   },
   {
     id: 'midnight-ai',
@@ -35,7 +63,8 @@ const PRESETS = [
     desc: 'Obsidian void & electric indigo',
     colors: ['#0b0813', '#231c44', '#ec4899', '#f3f4f6'],
     accent: 'border-l-[#ec4899]',
-    circle: 'bg-[#ec4899]'
+    circle: 'bg-[#ec4899]',
+    mode: 'dark'
   },
   {
     id: 'cyber-neon',
@@ -43,7 +72,8 @@ const PRESETS = [
     desc: 'Void black & digital cyber grid',
     colors: ['#050505', '#1a2323', '#22c55e', '#f0fdf4'],
     accent: 'border-l-[#22c55e]',
-    circle: 'bg-[#22c55e]'
+    circle: 'bg-[#22c55e]',
+    mode: 'dark'
   },
   {
     id: 'minimal-glass',
@@ -51,7 +81,8 @@ const PRESETS = [
     desc: 'Matte charcoal & frosted silver',
     colors: ['#18181b', '#2d2d30', '#f4f4f5', '#fafafa'],
     accent: 'border-l-[#f4f4f5]',
-    circle: 'bg-[#f4f4f5]'
+    circle: 'bg-[#f4f4f5]',
+    mode: 'dark'
   },
   {
     id: 'focus-mode',
@@ -59,7 +90,8 @@ const PRESETS = [
     desc: 'Jet black & high contrast lime',
     colors: ['#000000', '#262626', '#84cc16', '#ffffff'],
     accent: 'border-l-[#84cc16]',
-    circle: 'bg-[#84cc16]'
+    circle: 'bg-[#84cc16]',
+    mode: 'dark'
   }
 ];
 
@@ -242,13 +274,13 @@ export default function SettingsView() {
     }
   };
 
-  const handlePresetSelect = (presetId, event) => {
-    // Automatically switch to dark mode with animation if light mode
-    if (theme === 'light') {
+  const handlePresetSelect = (preset, event) => {
+    // Automatically switch light/dark mode to match preset mode
+    if (preset.mode !== theme) {
       toggleTheme(event);
     }
-    setThemeStyle(presetId);
-    toast(`${PRESETS.find(p => p.id === presetId)?.name} active`, 'success');
+    setThemeStyle(preset.id);
+    toast(`${preset.name} active`, 'success');
   };
 
   return (
@@ -309,18 +341,18 @@ export default function SettingsView() {
                 </button>
               </div>
 
-              {/* 5 Dark Presets Picker */}
+              {/* Light Presets Picker */}
               <div className="space-y-3">
-                <h4 className="text-[10px] font-bold text-fg-3 uppercase tracking-widest block">Gamified Dark Presets</h4>
+                <h4 className="text-[10px] font-bold text-fg-3 uppercase tracking-widest block">Gamified Light Presets</h4>
                 
                 <div className="grid grid-cols-1 gap-2">
-                  {PRESETS.map((preset) => {
-                    const isActive = theme === 'dark' && themeStyle === preset.id;
+                  {PRESETS.filter(p => p.mode === 'light').map((preset) => {
+                    const isActive = theme === 'light' && themeStyle === preset.id;
                     return (
                       <button
                         key={preset.id}
                         type="button"
-                        onClick={(e) => handlePresetSelect(preset.id, e)}
+                        onClick={(e) => handlePresetSelect(preset, e)}
                         className={`w-full text-left rounded-xl border p-3 flex items-center justify-between transition-all duration-200 cursor-pointer ${
                           isActive
                             ? 'bg-surface-3/90 border-purple ring-1 ring-purple/20 shadow-glow-purple scale-[1.01]'
@@ -336,7 +368,48 @@ export default function SettingsView() {
                         </div>
 
                         <div className="flex items-center gap-2">
-                          {/* Mini UI color preview palette dots */}
+                          {/* Mini UI color preview dots */}
+                          <div className="flex -space-x-1">
+                            {preset.colors.map((c, i) => (
+                              <span key={i} className="w-2.5 h-2.5 rounded-full border border-surface-0" style={{ backgroundColor: c }} />
+                            ))}
+                          </div>
+                          {isActive && <Check size={14} className="text-purple ml-1" />}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Dark Presets Picker */}
+              <div className="space-y-3 pt-2">
+                <h4 className="text-[10px] font-bold text-fg-3 uppercase tracking-widest block">Gamified Dark Presets</h4>
+                
+                <div className="grid grid-cols-1 gap-2">
+                  {PRESETS.filter(p => p.mode === 'dark').map((preset) => {
+                    const isActive = theme === 'dark' && themeStyle === preset.id;
+                    return (
+                      <button
+                        key={preset.id}
+                        type="button"
+                        onClick={(e) => handlePresetSelect(preset, e)}
+                        className={`w-full text-left rounded-xl border p-3 flex items-center justify-between transition-all duration-200 cursor-pointer ${
+                          isActive
+                            ? 'bg-surface-3/90 border-purple ring-1 ring-purple/20 shadow-glow-purple scale-[1.01]'
+                            : 'bg-surface-2/30 border-edge/50 hover:bg-surface-3/50 hover:border-edge'
+                        } border-l-[4px] ${preset.accent}`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className={`w-3 h-3 rounded-full shrink-0 ${preset.circle}`} />
+                          <div>
+                            <p className="text-xs font-bold text-fg">{preset.name}</p>
+                            <p className="text-[10px] text-fg-3 mt-0.5">{preset.desc}</p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          {/* Mini UI color preview dots */}
                           <div className="flex -space-x-1">
                             {preset.colors.map((c, i) => (
                               <span key={i} className="w-2.5 h-2.5 rounded-full border border-surface-0" style={{ backgroundColor: c }} />
@@ -556,18 +629,19 @@ export default function SettingsView() {
               <p className="text-xs text-fg-2 leading-relaxed italic border-l-2 border-purple pl-3 py-1 font-medium bg-purple/5 rounded-r-lg">
                 "BrainBank helps founders capture ideas, organize execution, and turn concepts into real products."
               </p>
-              
-              <div className="flex flex-wrap gap-2 pt-2 border-t border-edge/60">
-                <span className="text-[10px] px-2 py-0.5 rounded-md bg-surface-3/50 text-fg-3 border border-edge">React 19</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-md bg-surface-3/50 text-fg-3 border border-edge">Tailwind CSS v4</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-md bg-surface-3/50 text-fg-3 border border-edge">SheetJS</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-md bg-surface-3/50 text-fg-3 border border-edge">Framer Motion</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-md bg-surface-3/50 text-fg-3 border border-edge">Zustand</span>
-              </div>
-              
-              <div className="flex items-center justify-between text-[10px] text-fg-4 pt-1">
+              <div className="flex items-center justify-between text-[10px] text-fg-4 pt-4 border-t border-edge/60">
                 <span>Release v1.2.0 (Stable)</span>
-                <span>Created with ❤️ by FounderOS</span>
+                <span>
+                  Created with ❤️ by{' '}
+                  <a
+                    href="https://github.com/sumitc0de"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-purple underline font-semibold transition-colors"
+                  >
+                    sumitc0de
+                  </a>
+                </span>
               </div>
             </div>
           </motion.section>

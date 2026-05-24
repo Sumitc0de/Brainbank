@@ -457,4 +457,117 @@ input[type="range"]::-moz-range-thumb {
   --accent-purple-deep: #65a30d;
 }
 
+/* ============================================================
+   Light & Dark Mode Presets Override: Nordic Snow & Solarized Garden
+   ============================================================ */
+
+/* Nordic Snow (Light) */
+html.theme-nordic-snow:not(.dark) {
+  --surface-0: #f8fafc;
+  --surface-1: #f1f5f9;
+  --surface-2: #ffffff;
+  --surface-3: #e2e8f0;
+  --surface-4: #cbd5e1;
+  --edge: #cbd5e1;
+  --edge-light: #94a3b8;
+  --edge-accent: rgba(59, 130, 246, 0.2);
+  --fg: #0f172a;
+  --fg-2: #334155;
+  --fg-3: #64748b;
+  --fg-4: #94a3b8;
+  --glass: rgba(255, 255, 255, 0.7);
+  --glass-hover: rgba(255, 255, 255, 0.9);
+  --glass-border: rgba(59, 130, 246, 0.1);
+  --body-bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  --grid-color-x: rgba(59, 130, 246, 0.015);
+  --grid-color-y: rgba(59, 130, 246, 0.015);
+  --scrollbar-thumb: #cbd5e1;
+  --scrollbar-thumb-hover: #3b82f6;
+  --accent-purple: #3b82f6;
+  --accent-purple-soft: #60a5fa;
+  --accent-purple-deep: #2563eb;
+}
+
+/* Nordic Snow (Dark) */
+html.dark.theme-nordic-snow {
+  --surface-0: #0f172a;
+  --surface-1: #1e293b;
+  --surface-2: #1e293b;
+  --surface-3: #334155;
+  --surface-4: #475569;
+  --edge: #334155;
+  --edge-light: #475569;
+  --edge-accent: rgba(59, 130, 246, 0.35);
+  --fg: #f8fafc;
+  --fg-2: #cbd5e1;
+  --fg-3: #94a3b8;
+  --fg-4: #64748b;
+  --glass: rgba(30, 41, 59, 0.65);
+  --glass-hover: rgba(30, 41, 59, 0.85);
+  --glass-border: rgba(59, 130, 246, 0.15);
+  --body-bg-gradient: linear-gradient(135deg, #0b0f19 0%, #1e293b 100%);
+  --grid-color-x: rgba(59, 130, 246, 0.02);
+  --grid-color-y: rgba(96, 165, 250, 0.02);
+  --scrollbar-thumb: #334155;
+  --scrollbar-thumb-hover: #3b82f6;
+  --accent-purple: #3b82f6;
+  --accent-purple-soft: #60a5fa;
+  --accent-purple-deep: #2563eb;
+}
+
+/* Solarized Garden (Light) */
+html.theme-solarized-garden:not(.dark) {
+  --surface-0: #f4f4f0;
+  --surface-1: #eaeae0;
+  --surface-2: #ffffff;
+  --surface-3: #dfdfd0;
+  --surface-4: #c9c9b5;
+  --edge: #dfdfd0;
+  --edge-light: #c9c9b5;
+  --edge-accent: rgba(45, 111, 41, 0.2);
+  --fg: #1d331b;
+  --fg-2: #3a5c36;
+  --fg-3: #5c7f58;
+  --fg-4: #7f9f7b;
+  --glass: rgba(255, 255, 255, 0.7);
+  --glass-hover: rgba(255, 255, 255, 0.9);
+  --glass-border: rgba(45, 111, 41, 0.1);
+  --body-bg-gradient: linear-gradient(135deg, #f4f4f0 0%, #dfdfd0 100%);
+  --grid-color-x: rgba(45, 111, 41, 0.015);
+  --grid-color-y: rgba(45, 111, 41, 0.015);
+  --scrollbar-thumb: #dfdfd0;
+  --scrollbar-thumb-hover: #2d6f29;
+  --accent-purple: #2d6f29;
+  --accent-purple-soft: #4e9c49;
+  --accent-purple-deep: #1e4a1b;
+}
+
+/* Solarized Garden (Dark) */
+html.dark.theme-solarized-garden {
+  --surface-0: #0a1409;
+  --surface-1: #112210;
+  --surface-2: #162a15;
+  --surface-3: #223f21;
+  --surface-4: #335932;
+  --edge: #1f3b1d;
+  --edge-light: #335932;
+  --edge-accent: rgba(45, 111, 41, 0.35);
+  --fg: #f0fdf4;
+  --fg-2: #bbf7d0;
+  --fg-3: #86efac;
+  --fg-4: #4ade80;
+  --glass: rgba(17, 34, 16, 0.65);
+  --glass-hover: rgba(17, 34, 16, 0.85);
+  --glass-border: rgba(45, 111, 41, 0.15);
+  --body-bg-gradient: linear-gradient(135deg, #050b04 0%, #112210 100%);
+  --grid-color-x: rgba(45, 111, 41, 0.02);
+  --grid-color-y: rgba(78, 156, 73, 0.02);
+  --scrollbar-thumb: #223f21;
+  --scrollbar-thumb-hover: #4e9c49;
+  --accent-purple: #4e9c49;
+  --accent-purple-soft: #86efac;
+  --accent-purple-deep: #1e4a1b;
+}
+
+
 
