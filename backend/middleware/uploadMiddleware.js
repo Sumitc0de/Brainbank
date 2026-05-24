@@ -44,8 +44,7 @@ const pdfStorage = new CloudinaryStorage({
     folder: resolveFolder(req.body.category, 'prd'),
     allowed_formats: ['pdf'],
     public_id: `${Date.now()}-${sanitizePublicId(file.originalname)}`,
-    resource_type: 'raw',
-    flags: 'inline',
+    resource_type: 'image',
   }),
 });
 

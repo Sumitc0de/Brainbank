@@ -31,8 +31,9 @@ async function attachToIdea({ ideaId, file, type, res }) {
   const idea = await Idea.findOne({ id: ideaId });
 
   if (!idea) {
+    const resourceType = attachment.url?.includes('/raw/') ? 'raw' : 'image';
     await cloudinary.uploader.destroy(attachment.public_id, {
-      resource_type: type === 'pdf' ? 'raw' : 'image',
+      resource_type: resourceType,
     });
     return res.status(404).json({ success: false, error: 'Idea not found' });
   }
@@ -80,8 +81,9 @@ export async function deleteUpload(req, res) {
     }
 
     const attachment = idea.attachments.find((item) => item.public_id === publicId);
+    const resourceType = attachment.url?.includes('/raw/') ? 'raw' : 'image';
     await cloudinary.uploader.destroy(publicId, {
-      resource_type: attachment.type === 'pdf' ? 'raw' : 'image',
+      resource_type: resourceType,
     });
 
     idea.attachments = idea.attachments.filter((item) => item.public_id !== publicId);

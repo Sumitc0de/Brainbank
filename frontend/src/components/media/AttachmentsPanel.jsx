@@ -37,7 +37,7 @@ function pdfPreviewUrl(url) {
 }
 
 function downloadUrl(item) {
-  if (item.type !== 'pdf' || !item.url?.includes('/upload/')) return item.url;
+  if (item.type !== 'pdf' || !item.url?.includes('/upload/') || item.url?.includes('/raw/')) return item.url;
   const filename = encodeURIComponent((item.name || 'brainbank-file').replace(/\.pdf$/i, ''));
   return item.url.replace('/upload/', `/upload/fl_attachment:${filename}/`);
 }
