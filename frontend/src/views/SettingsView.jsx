@@ -141,8 +141,22 @@ export default function SettingsView() {
   };
 
   const counts = useMemo(() => {
-    const taskCount = Object.values(tasks || {}).flat().length;
-    const researchCount = Object.values(research || {}).flat().length;
+    const activeIdeaIds = new Set(ideas.map(i => i.id || i._id).filter(Boolean));
+
+    let taskCount = 0;
+    Object.entries(tasks || {}).forEach(([ideaId, list]) => {
+      if (activeIdeaIds.has(ideaId) && Array.isArray(list)) {
+        taskCount += list.length;
+      }
+    });
+
+    let researchCount = 0;
+    Object.entries(research || {}).forEach(([ideaId, list]) => {
+      if (activeIdeaIds.has(ideaId) && Array.isArray(list)) {
+        researchCount += list.length;
+      }
+    });
+
     return [
       { label: 'Ideas Captured', value: ideas.length, emoji: '💡' },
       { label: 'Tasks Forged', value: taskCount, emoji: '🛠️' },
