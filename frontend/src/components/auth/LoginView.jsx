@@ -137,7 +137,7 @@ export default function LoginView() {
 
   return (
     <div 
-      className="relative min-h-screen w-full overflow-x-hidden select-none font-sans text-fg pb-16"
+      className="relative h-screen w-full overflow-y-auto overflow-x-hidden select-none font-sans text-fg pb-16 scroll-smooth"
       style={loginBackgroundStyle}
     >
       
