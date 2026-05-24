@@ -7,6 +7,7 @@ import Button from '../ui/Button';
 import ScoreSlider from '../ui/ScoreSlider';
 import ProgressBar from '../ui/ProgressBar';
 import PrdViewer from '../prd/PrdViewer';
+import AttachmentsPanel from '../media/AttachmentsPanel';
 import { toast } from '../ui/Toast';
 
 const STATUSES = ['backlog', 'queued', 'building', 'completed'];
@@ -174,6 +175,8 @@ export default function IdeaDetail({ idea, onClose }) {
               <PrdViewer idea={idea} />
             )}
           </div>
+
+          <AttachmentsPanel idea={idea} />
 
           {/* Tags */}
           {idea.tags?.length > 0 && (

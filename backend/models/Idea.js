@@ -37,6 +37,25 @@ const detailsSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const attachmentSchema = new mongoose.Schema(
+  {
+    type: {
+      type: String,
+      enum: ['image', 'pdf'],
+      required: true,
+    },
+    name: { type: String, default: '' },
+    url: { type: String, required: true },
+    public_id: { type: String, required: true },
+    size: { type: Number, default: 0 },
+    uploadedAt: {
+      type: Date,
+      default: Date.now,
+    },
+  },
+  { _id: true }
+);
+
 const ideaSchema = new mongoose.Schema(
   {
     id: { type: String, default: () => uuidv4(), unique: true, index: true },
@@ -61,6 +80,9 @@ const ideaSchema = new mongoose.Schema(
 
     // AI-generated PRD (all editable)
     prd: { type: prdSchema, default: () => ({}) },
+
+    // Cloud media and document attachments
+    attachments: { type: [attachmentSchema], default: [] },
 
     // Activity tracking
     lastActiveAt: { type: Date, default: Date.now },

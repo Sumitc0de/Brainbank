@@ -119,6 +119,37 @@ const useIdeaStore = create((set, get) => ({
     }
   },
 
+  // Media attachments
+  uploadAttachment: async ({ ideaId, file, type, category, onProgress }) => {
+    try {
+      const res = await api.uploadAttachment({ ideaId, file, type, category, onProgress });
+      const updated = res.data;
+      set((state) => ({
+        ideas: state.ideas.map((i) => (i.id === ideaId ? updated : i)),
+        selectedIdea: state.selectedIdea?.id === ideaId ? updated : state.selectedIdea,
+      }));
+      return updated;
+    } catch (err) {
+      set({ error: err.message });
+      throw err;
+    }
+  },
+
+  deleteAttachment: async (publicId) => {
+    try {
+      const res = await api.deleteAttachment(publicId);
+      const updated = res.data;
+      set((state) => ({
+        ideas: state.ideas.map((i) => (i.id === updated.id ? updated : i)),
+        selectedIdea: state.selectedIdea?.id === updated.id ? updated : state.selectedIdea,
+      }));
+      return updated;
+    } catch (err) {
+      set({ error: err.message });
+      throw err;
+    }
+  },
+
   // Derived getters
   getFilteredIdeas: () => {
     const { ideas, searchQuery } = get();

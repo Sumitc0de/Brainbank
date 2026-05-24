@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import ideaRoutes from './routes/ideaRoutes.js';
+import uploadRoutes from './routes/uploadRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -61,6 +62,17 @@ const requireDB = async (req, res, next) => {
 
 // Routes
 app.use('/ideas', requireDB, ideaRoutes);
+app.use('/api/upload', requireDB, uploadRoutes);
+
+app.use((err, req, res, next) => {
+  if (!err) return next();
+
+  const isUploadError = err.name === 'MulterError' || err.message?.startsWith('Invalid ');
+  res.status(isUploadError ? 400 : 500).json({
+    success: false,
+    error: err.code === 'LIMIT_FILE_SIZE' ? 'File is too large.' : err.message,
+  });
+});
 
 const startServer = async () => {
   try {
@@ -70,8 +82,18 @@ const startServer = async () => {
     console.log('Server will start, and /ideas routes will retry the database connection per request.');
   }
 
-  app.listen(PORT, () => {
+  const server = app.listen(PORT, () => {
     console.log(`FounderOS backend running on port ${PORT}`);
+  });
+
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.error(`Backend port ${PORT} is already in use. Stop the other server or set PORT to another value.`);
+      process.exit(1);
+    }
+
+    console.error('Backend server failed:', err);
+    process.exit(1);
   });
 };
 

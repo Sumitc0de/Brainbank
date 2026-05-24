@@ -3,6 +3,8 @@ import axios from 'axios';
 const API_BASE_URL = import.meta.env.VITE_API_URL
   || (import.meta.env.DEV ? '/ideas' : 'https://brainbank-15ff.onrender.com/ideas');
 
+const API_ROOT_URL = API_BASE_URL.replace(/\/ideas\/?$/, '');
+
 const getApiErrorMessage = (error) => {
   const responseError = error.response?.data?.error || error.response?.data?.message;
   if (responseError) return responseError;
@@ -22,7 +24,20 @@ const api = axios.create({
   },
 });
 
+const uploadApi = axios.create({
+  baseURL: `${API_ROOT_URL}/api/upload`,
+  headers: { Accept: 'application/json' },
+});
+
 api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    error.message = getApiErrorMessage(error);
+    return Promise.reject(error);
+  }
+);
+
+uploadApi.interceptors.response.use(
   (response) => response,
   (error) => {
     error.message = getApiErrorMessage(error);
@@ -52,5 +67,23 @@ export const regeneratePrdSection = (id, section) =>
 // Stats & Stale
 export const getStats = () => api.get('/stats').then(r => r.data);
 export const getStale = () => api.get('/stale').then(r => r.data);
+
+// Media attachments
+export const uploadAttachment = ({ ideaId, file, type, category, onProgress }) => {
+  const formData = new FormData();
+  formData.append('ideaId', ideaId);
+  formData.append('category', category);
+  formData.append('file', file);
+
+  return uploadApi.post(`/${type}`, formData, {
+    onUploadProgress: (event) => {
+      if (!event.total || !onProgress) return;
+      onProgress(Math.round((event.loaded * 100) / event.total));
+    },
+  }).then(r => r.data);
+};
+
+export const deleteAttachment = (publicId) =>
+  uploadApi.delete(`/${encodeURIComponent(publicId)}`).then(r => r.data);
 
 export default api;
