@@ -43,43 +43,46 @@ app.use(helmet({
       upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
     },
   },
+  crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
   crossOriginResourcePolicy: { policy: 'cross-origin' },
 }));
 
 // 2. CORS — restricted origins with credentials
-const allowedOrigins = [
+function normalizeOrigin(origin) {
+  if (!origin) return '';
+
+  try {
+    return new URL(origin.trim()).origin;
+  } catch {
+    return origin.trim().replace(/\/+$/, '');
+  }
+}
+
+const allowedOrigins = new Set([
   'http://localhost:5173',
   'http://localhost:4173',
   'http://127.0.0.1:5173',
   'https://brainbank-one.vercel.app', // Production frontend fallback
-];
+].map(normalizeOrigin));
 
 // Add production origins from env
-if (process.env.ALLOWED_ORIGINS) {
-  process.env.ALLOWED_ORIGINS.split(',').forEach((origin) => {
-    let trimmed = origin.trim();
-    if (trimmed) {
-      // Remove trailing slash if present to avoid CORS failures
-      if (trimmed.endsWith('/')) {
-        trimmed = trimmed.slice(0, -1);
-      }
-      allowedOrigins.push(trimmed);
-    }
-  });
-}
+[
+  process.env.CLIENT_URL,
+  process.env.FRONTEND_URL,
+  process.env.ALLOWED_ORIGINS,
+]
+  .filter(Boolean)
+  .flatMap((value) => value.split(','))
+  .map(normalizeOrigin)
+  .filter(Boolean)
+  .forEach((origin) => allowedOrigins.add(origin));
 
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (mobile, Postman, server-to-server)
     if (!origin) return callback(null, true);
-    
-    // Normalize requested origin to prevent trailing slash mismatch
-    let normalizedOrigin = origin;
-    if (normalizedOrigin.endsWith('/')) {
-      normalizedOrigin = normalizedOrigin.slice(0, -1);
-    }
-
-    if (allowedOrigins.includes(normalizedOrigin)) {
+    const normalizedOrigin = normalizeOrigin(origin);
+    if (allowedOrigins.has(normalizedOrigin)) {
       return callback(null, true);
     }
     
@@ -87,7 +90,7 @@ app.use(cors({
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Accept', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Accept', 'Authorization', 'X-Requested-With'],
 }));
 
 // 3. Body parsing
@@ -183,7 +186,7 @@ const startServer = async () => {
   const server = app.listen(PORT, () => {
     console.log(`\n🚀 BrainBank backend running on port ${PORT}`);
     console.log(`   Environment: ${process.env.NODE_ENV || 'development'}`);
-    console.log(`   CORS origins: ${allowedOrigins.join(', ')}\n`);
+    console.log(`   CORS origins: ${Array.from(allowedOrigins).join(', ')}\n`);
   });
 
   server.on('error', (err) => {

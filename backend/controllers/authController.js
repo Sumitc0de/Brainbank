@@ -12,13 +12,14 @@ const ACCESS_TOKEN_EXPIRY = '15m';
 const REFRESH_TOKEN_EXPIRY = '30d';
 
 const isSecureCookie = () => process.env.NODE_ENV === 'production';
+const sameSiteCookiePolicy = () => (isSecureCookie() ? 'none' : 'lax');
 
 // ── Cookie options ──────────────────────────────────────────
 function accessCookieOpts() {
   return {
     httpOnly: true,
     secure: isSecureCookie(),
-    sameSite: isSecureCookie() ? 'strict' : 'lax',
+    sameSite: sameSiteCookiePolicy(),
     maxAge: 15 * 60 * 1000, // 15 min
     path: '/',
   };
@@ -28,7 +29,7 @@ function refreshCookieOpts() {
   return {
     httpOnly: true,
     secure: isSecureCookie(),
-    sameSite: isSecureCookie() ? 'strict' : 'lax',
+    sameSite: sameSiteCookiePolicy(),
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     path: '/api/auth', // only sent to auth routes
   };
