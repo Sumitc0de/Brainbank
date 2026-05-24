@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { 
   Sparkles, Terminal, LogIn, Cpu, Award, HelpCircle, Crown, 
   Star, Layers, CheckCircle2, ChevronRight, MessageSquare,
-  ShieldAlert, ShieldCheck, Zap, Lock, DollarSign
+  ShieldCheck, Zap, Lock, DollarSign
 } from 'lucide-react';
 import useAuthStore from '../../store/useAuthStore';
 import { toast } from '../ui/Toast';
@@ -137,7 +137,7 @@ export default function LoginView() {
 
   return (
     <div 
-      className="relative min-h-screen w-full overflow-x-hidden select-none font-sans text-fg pb-16 scroll-smooth"
+      className="relative min-h-screen w-full overflow-x-hidden select-none font-sans text-fg pb-16"
       style={loginBackgroundStyle}
     >
       
@@ -164,7 +164,7 @@ export default function LoginView() {
           <button 
             type="button"
             onClick={scrollToAuth}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-purple hover:bg-purple-deep text-white font-bold text-xs shadow-md transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-purple hover:bg-purple-deep text-white font-bold text-xs shadow-md transition-colors cursor-pointer animate-pulse-glow"
           >
             <LogIn size={12} />
             Start Building
@@ -173,120 +173,120 @@ export default function LoginView() {
       </header>
 
       {/* ================= HERO SECTION ================= */}
-      <section className="max-w-6xl mx-auto px-6 pt-16 md:pt-28 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-        
-        {/* Left Side Info */}
-        <motion.div 
-          className="lg:col-span-7 space-y-6 text-left"
-          initial={{ opacity: 0, x: -40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-        >
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-purple/30 bg-purple/10 text-purple text-xs font-bold uppercase tracking-wider shadow-glow-purple/20">
-            <Sparkles size={12} className="animate-spin" style={{ animationDuration: '4s' }} />
-            The Founder OS
-          </div>
-          
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-fg leading-[1.15]">
-            Shape your ideas, <br />
-            <span className="bg-gradient-to-r from-purple via-purple-soft to-green bg-clip-text text-transparent">
-              build your future.
-            </span>
-          </h1>
-          
-          <p className="text-fg-2 text-base sm:text-lg max-w-lg leading-relaxed">
-            Brainbank is the ultimate gamified workspace for serious founders. Structure startup ideas, prioritize pipelines with ICE analysis, generate complete AI PRDs, and level up your launcher profile.
-          </p>
+      <section className="min-h-[90vh] flex items-center max-w-6xl mx-auto px-6 py-12 md:py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full">
+          {/* Left Side Info */}
+          <motion.div 
+            className="lg:col-span-7 space-y-6 text-left"
+            initial={{ opacity: 0, x: -40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-purple/30 bg-purple/10 text-purple text-xs font-bold uppercase tracking-wider shadow-glow-purple/20">
+              <Sparkles size={12} className="animate-spin" style={{ animationDuration: '4s' }} />
+              The Founder OS
+            </div>
+            
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-fg leading-[1.15]">
+              Shape your ideas, <br />
+              <span className="bg-gradient-to-r from-purple via-purple-soft to-green bg-clip-text text-transparent">
+                build your future.
+              </span>
+            </h1>
+            
+            <p className="text-fg-2 text-base sm:text-lg max-w-lg leading-relaxed">
+              Brainbank is the ultimate gamified workspace for serious founders. Structure startup ideas, prioritize pipelines with ICE analysis, generate complete AI PRDs, and level up your launcher profile.
+            </p>
 
-          <div className="flex items-center gap-3 pt-2">
-            <button 
-              type="button"
-              onClick={scrollToAuth}
-              className="flex items-center gap-1.5 px-5 py-3.5 rounded-xl bg-purple hover:bg-purple-deep text-white font-bold text-sm shadow-md transition-all active:scale-[0.98] cursor-pointer"
-            >
-              Get Started Free
-              <ChevronRight size={16} />
-            </button>
-            <a 
-              href="#features" 
-              className="px-5 py-3.5 rounded-xl border border-edge bg-surface-2/60 hover:bg-surface-3/60 text-fg-2 hover:text-fg font-bold text-sm transition-all shadow-card"
-            >
-              Explore Features
-            </a>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-4 text-xs font-semibold text-fg-3">
-            <span className="flex items-center gap-1.5"><CheckCircle2 size={13} className="text-green" /> Free developer tier</span>
-            <span className="flex items-center gap-1.5"><CheckCircle2 size={13} className="text-green" /> No credit card required</span>
-            <span className="flex items-center gap-1.5"><CheckCircle2 size={13} className="text-green" /> Immediate AI deliverables</span>
-          </div>
-        </motion.div>
-
-        {/* Right Side Visual Mockup (Interactive gamified level preview card) */}
-        <motion.div 
-          className="lg:col-span-5 w-full flex justify-center"
-          initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
-        >
-          <div className="relative w-full max-w-sm rounded-3xl border border-edge bg-surface-2/80 p-6 shadow-elevated backdrop-blur-xl">
-            <div className="flex items-center justify-between mb-4 pb-3 border-b border-edge/60">
-              <div className="flex items-center gap-2">
-                <Crown size={15} className="text-purple animate-pulse" />
-                <span className="text-xs font-bold text-fg">Startup Dashboard</span>
-              </div>
-              <span className="text-[10px] px-2 py-0.5 rounded-md bg-green/10 border border-green/20 text-green font-bold uppercase">Online</span>
+            <div className="flex items-center gap-3 pt-2">
+              <button 
+                type="button"
+                onClick={scrollToAuth}
+                className="flex items-center gap-1.5 px-5 py-3.5 rounded-xl bg-purple hover:bg-purple-deep text-white font-bold text-sm shadow-md transition-all active:scale-[0.98] cursor-pointer"
+              >
+                Get Started Free
+                <ChevronRight size={16} />
+              </button>
+              <a 
+                href="#features" 
+                className="px-5 py-3.5 rounded-xl border border-edge bg-surface-2/60 hover:bg-surface-3/60 text-fg-2 hover:text-fg font-bold text-sm transition-all shadow-card"
+              >
+                Explore Features
+              </a>
             </div>
 
-            {/* Level status progress bar mockup */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="text-sm font-black text-fg">Level 4: Builder</h4>
-                  <p className="text-[10px] text-fg-3">Active Quest pipeline</p>
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-4 text-xs font-semibold text-fg-3">
+              <span className="flex items-center gap-1.5"><CheckCircle2 size={13} className="text-green" /> Free developer tier</span>
+              <span className="flex items-center gap-1.5"><CheckCircle2 size={13} className="text-green" /> No credit card required</span>
+              <span className="flex items-center gap-1.5"><CheckCircle2 size={13} className="text-green" /> Immediate AI deliverables</span>
+            </div>
+          </motion.div>
+
+          {/* Right Side Visual Mockup (Interactive gamified level preview card) */}
+          <motion.div 
+            className="lg:col-span-5 w-full flex justify-center"
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
+          >
+            <div className="relative w-full max-w-sm rounded-3xl border border-edge bg-surface-2/80 p-6 shadow-elevated backdrop-blur-xl">
+              <div className="flex items-center justify-between mb-4 pb-3 border-b border-edge/60">
+                <div className="flex items-center gap-2">
+                  <Crown size={15} className="text-purple animate-pulse" />
+                  <span className="text-xs font-bold text-fg">Startup Dashboard</span>
                 </div>
-                <div className="text-right">
-                  <span className="text-xs font-mono text-purple font-bold flex items-center gap-1"><Zap size={11} /> 350 XP</span>
-                </div>
+                <span className="text-[10px] px-2 py-0.5 rounded-md bg-green/10 border border-green/20 text-green font-bold uppercase">Online</span>
               </div>
 
-              {/* Mock progress bar */}
-              <div className="h-2 w-full rounded-full bg-surface-3 overflow-hidden border border-edge/40">
-                <div className="h-full rounded-full bg-gradient-to-r from-purple via-purple-soft to-green" style={{ width: '65%' }} />
-              </div>
+              {/* Level status progress bar mockup */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="text-sm font-black text-fg">Level 4: Builder</h4>
+                    <p className="text-[10px] text-fg-3">Active Quest pipeline</p>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-xs font-mono text-purple font-bold flex items-center gap-1"><Zap size={11} /> 350 XP</span>
+                  </div>
+                </div>
 
-              {/* Project metrics */}
-              <div className="grid grid-cols-2 gap-3 pt-2">
-                <div className="rounded-xl border border-edge bg-surface-0/60 p-3 shadow-card">
-                  <p className="text-[10px] text-fg-3">Active Ideas</p>
-                  <p className="text-lg font-black text-fg mt-0.5">8</p>
+                {/* Mock progress bar */}
+                <div className="h-2 w-full rounded-full bg-surface-3 overflow-hidden border border-edge/40">
+                  <div className="h-full rounded-full bg-gradient-to-r from-purple via-purple-soft to-green" style={{ width: '65%' }} />
                 </div>
-                <div className="rounded-xl border border-edge bg-surface-0/60 p-3 shadow-card">
-                  <p className="text-[10px] text-fg-3">PRDs Completed</p>
-                  <p className="text-lg font-black text-fg mt-0.5">5</p>
-                </div>
-              </div>
 
-              {/* Latest quest log */}
-              <div className="rounded-xl border border-edge bg-surface-0/70 p-3 space-y-2 shadow-card">
-                <p className="text-[10px] font-bold text-fg-3 uppercase tracking-wider">Latest Action Logs</p>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="truncate text-fg font-medium">1. Dynamic ICE Scoring</span>
-                  <span className="text-purple font-bold">+5 XP</span>
+                {/* Project metrics */}
+                <div className="grid grid-cols-2 gap-3 pt-2">
+                  <div className="rounded-xl border border-edge bg-surface-0/60 p-3 shadow-card">
+                    <p className="text-[10px] text-fg-3">Active Ideas</p>
+                    <p className="text-lg font-black text-fg mt-0.5">8</p>
+                  </div>
+                  <div className="rounded-xl border border-edge bg-surface-0/60 p-3 shadow-card">
+                    <p className="text-[10px] text-fg-3">PRDs Completed</p>
+                    <p className="text-lg font-black text-fg mt-0.5">5</p>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="truncate text-fg font-medium">2. AI Copilot Drafted Spec</span>
-                  <span className="text-purple font-bold">+10 XP</span>
+
+                {/* Latest quest log */}
+                <div className="rounded-xl border border-edge bg-surface-0/70 p-3 space-y-2 shadow-card">
+                  <p className="text-[10px] font-bold text-fg-3 uppercase tracking-wider">Latest Action Logs</p>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="truncate text-fg font-medium">1. Dynamic ICE Scoring</span>
+                    <span className="text-purple font-bold">+5 XP</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="truncate text-fg font-medium">2. AI Copilot Drafted Spec</span>
+                    <span className="text-purple font-bold">+10 XP</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </motion.div>
-
+          </motion.div>
+        </div>
       </section>
 
       {/* ================= FEATURES SECTION ================= */}
-      <section id="features" className="max-w-6xl mx-auto px-6 pt-28 md:pt-36 scroll-mt-16">
+      <section id="features" className="min-h-[85vh] flex flex-col justify-center max-w-6xl mx-auto px-6 py-20 md:py-28 scroll-mt-20">
         <motion.div 
           className="text-center space-y-3 max-w-2xl mx-auto mb-16"
           {...fadeInUp}
@@ -334,7 +334,7 @@ export default function LoginView() {
       </section>
 
       {/* ================= PRICING SECTION ================= */}
-      <section id="pricing" className="max-w-5xl mx-auto px-6 pt-28 md:pt-36 scroll-mt-16">
+      <section id="pricing" className="min-h-[85vh] flex flex-col justify-center max-w-5xl mx-auto px-6 py-20 md:py-28 scroll-mt-20">
         <motion.div 
           className="text-center space-y-3 max-w-2xl mx-auto mb-16"
           {...fadeInUp}
@@ -351,7 +351,7 @@ export default function LoginView() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto w-full">
           {PRICING_PLANS.map((plan, idx) => (
             <motion.div
               key={idx}
@@ -407,7 +407,7 @@ export default function LoginView() {
       </section>
 
       {/* ================= REVIEWS SECTION ================= */}
-      <section id="reviews" className="max-w-6xl mx-auto px-6 pt-28 md:pt-36 scroll-mt-16">
+      <section id="reviews" className="min-h-[85vh] flex flex-col justify-center max-w-6xl mx-auto px-6 py-20 md:py-28 scroll-mt-20">
         <motion.div 
           className="text-center space-y-3 max-w-2xl mx-auto mb-16"
           {...fadeInUp}
@@ -424,7 +424,7 @@ export default function LoginView() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
           {REVIEWS.map((item, idx) => (
             <motion.div 
               key={idx}
@@ -460,7 +460,7 @@ export default function LoginView() {
       </section>
 
       {/* ================= FINAL CALL TO ACTION / AUTH GATED SECTION ================= */}
-      <section id="auth-section" className="max-w-4xl mx-auto px-6 pt-32 scroll-mt-24">
+      <section id="auth-section" className="min-h-[75vh] flex items-center justify-center max-w-4xl mx-auto px-6 py-20 md:py-28 scroll-mt-20">
         <motion.div 
           className="w-full rounded-3xl border border-edge bg-surface-2/80 p-8 sm:p-12 backdrop-blur-xl shadow-elevated text-center space-y-8 relative overflow-hidden"
           {...fadeInUp}
