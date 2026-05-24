@@ -15,15 +15,13 @@ export default function App() {
   const ideas = useIdeaStore((s) => s.ideas);
   const token = useAuthStore((s) => s.token);
   const theme = useAuthStore((s) => s.theme);
+  const syncDOM = useAuthStore((s) => s.syncDOM);
+  const compactMode = useAuthStore((s) => s.compactMode);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [theme]);
+    syncDOM();
+  }, [syncDOM, theme]);
 
   useEffect(() => {
     if (token) {
@@ -51,7 +49,7 @@ export default function App() {
 
   return (
     <GoogleOAuthProvider clientId={googleClientId}>
-      <div className="flex h-screen bg-surface-0 text-fg overflow-hidden">
+      <div className={`flex h-screen bg-surface-0 text-fg overflow-hidden ${compactMode ? 'compact-layout' : ''}`}>
         {/* Sidebar */}
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 

@@ -39,6 +39,11 @@
   --grid-color-y: rgba(223,32,70,.025);
   --scrollbar-thumb: #d8bd72;
   --scrollbar-thumb-hover: #2d6f29;
+
+  /* ---- Accent Color Overrides ---- */
+  --accent-purple: #df2046;
+  --accent-purple-soft: #ff9f33;
+  --accent-purple-deep: #b91637;
 }
 
 .dark {
@@ -75,6 +80,11 @@
   --grid-color-y: rgba(223, 32, 70, .018);
   --scrollbar-thumb: #443e38;
   --scrollbar-thumb-hover: #ff9f33;
+
+  /* ---- Accent Color Overrides ---- */
+  --accent-purple: #df2046;
+  --accent-purple-soft: #ff9f33;
+  --accent-purple-deep: #b91637;
 }
 
 @theme {
@@ -97,9 +107,9 @@
   --color-fg-4: var(--fg-4);
 
   /* ---- Accents ---- */
-  --color-purple: #df2046;
-  --color-purple-soft: #ff9f33;
-  --color-purple-deep: #b91637;
+  --color-purple: var(--accent-purple);
+  --color-purple-soft: var(--accent-purple-soft);
+  --color-purple-deep: var(--accent-purple-deep);
   --color-blue: #85b9df;
   --color-cyan: #b8d7e8;
   --color-green: #2d6f29;
@@ -257,4 +267,194 @@ input[type="range"]::-moz-range-thumb {
 ::view-transition-old(root) {
   z-index: 1;
 }
+
+/* ============================================================
+   Dark Mode Presets Override
+   ============================================================ */
+
+.dark.theme-midnight-ai {
+  /* ---- Backgrounds ---- */
+  --surface-0: #0b0813;
+  --surface-1: #120e22;
+  --surface-2: #1a1530;
+  --surface-3: #272045;
+  --surface-4: #372e5c;
+
+  /* ---- Borders ---- */
+  --edge: #231c44;
+  --edge-light: #372e5c;
+  --edge-accent: rgba(99, 102, 241, 0.35);
+
+  /* ---- Text ---- */
+  --fg: #f3f4f6;
+  --fg-2: #cbd5e1;
+  --fg-3: #94a3b8;
+  --fg-4: #64748b;
+
+  /* ---- Glass ---- */
+  --glass: rgba(18, 14, 34, 0.65);
+  --glass-hover: rgba(18, 14, 34, 0.8);
+  --glass-border: rgba(99, 102, 241, 0.15);
+
+  /* ---- Body Gradients & Telemetry ---- */
+  --body-bg-gradient: linear-gradient(135deg, #07050d 0%, #0e0a1a 100%);
+  --grid-color-x: rgba(99, 102, 241, 0.02);
+  --grid-color-y: rgba(236, 72, 153, 0.02);
+  --scrollbar-thumb: #231c44;
+  --scrollbar-thumb-hover: #ec4899;
+
+  /* ---- Accent Color Overrides ---- */
+  --accent-purple: #ec4899;
+  --accent-purple-soft: #f472b6;
+  --accent-purple-deep: #db2777;
+}
+
+.dark.theme-sunset-quest {
+  /* ---- Backgrounds ---- */
+  --surface-0: #120f0e;
+  --surface-1: #1a1615;
+  --surface-2: #241e1d;
+  --surface-3: #322a28;
+  --surface-4: #443936;
+
+  /* ---- Borders ---- */
+  --edge: #2e2624;
+  --edge-light: #443936;
+  --edge-accent: rgba(239, 68, 68, 0.35);
+
+  /* ---- Text ---- */
+  --fg: #f5f5f4;
+  --fg-2: #d6d3d1;
+  --fg-3: #a8a29e;
+  --fg-4: #78716c;
+
+  /* ---- Glass ---- */
+  --glass: rgba(26, 22, 21, 0.65);
+  --glass-hover: rgba(26, 22, 21, 0.8);
+  --glass-border: rgba(249, 115, 22, 0.15);
+
+  /* ---- Body Gradients & Telemetry ---- */
+  --body-bg-gradient: linear-gradient(135deg, #0c0a09 0%, #171211 100%);
+  --grid-color-x: rgba(249, 115, 22, 0.02);
+  --grid-color-y: rgba(239, 68, 68, 0.02);
+  --scrollbar-thumb: #2e2624;
+  --scrollbar-thumb-hover: #f97316;
+
+  /* ---- Accent Color Overrides ---- */
+  --accent-purple: #f97316;
+  --accent-purple-soft: #fdba74;
+  --accent-purple-deep: #ea580c;
+}
+
+.dark.theme-cyber-neon {
+  /* ---- Backgrounds ---- */
+  --surface-0: #050505;
+  --surface-1: #0d0d0d;
+  --surface-2: #141414;
+  --surface-3: #1f1f1f;
+  --surface-4: #2b2b2b;
+
+  /* ---- Borders ---- */
+  --edge: #1a2323;
+  --edge-light: #223535;
+  --edge-accent: rgba(6, 182, 212, 0.35);
+
+  /* ---- Text ---- */
+  --fg: #f0fdf4;
+  --fg-2: #bbf7d0;
+  --fg-3: #86efac;
+  --fg-4: #4ade80;
+
+  /* ---- Glass ---- */
+  --glass: rgba(13, 13, 13, 0.75);
+  --glass-hover: rgba(13, 13, 13, 0.9);
+  --glass-border: rgba(6, 182, 212, 0.25);
+
+  /* ---- Body Gradients & Telemetry ---- */
+  --body-bg-gradient: linear-gradient(135deg, #000000 0%, #080808 100%);
+  --grid-color-x: rgba(6, 182, 212, 0.04);
+  --grid-color-y: rgba(34, 197, 94, 0.04);
+  --scrollbar-thumb: #223535;
+  --scrollbar-thumb-hover: #22c55e;
+
+  /* ---- Accent Color Overrides ---- */
+  --accent-purple: #22c55e;
+  --accent-purple-soft: #4ade80;
+  --accent-purple-deep: #16a34a;
+}
+
+.dark.theme-minimal-glass {
+  /* ---- Backgrounds ---- */
+  --surface-0: #18181b;
+  --surface-1: #202023;
+  --surface-2: #27272a;
+  --surface-3: #3f3f46;
+  --surface-4: #52525b;
+
+  /* ---- Borders ---- */
+  --edge: #2d2d30;
+  --edge-light: #3f3f46;
+  --edge-accent: rgba(255, 255, 255, 0.15);
+
+  /* ---- Text ---- */
+  --fg: #fafafa;
+  --fg-2: #e4e4e7;
+  --fg-3: #a1a1aa;
+  --fg-4: #71717a;
+
+  /* ---- Glass ---- */
+  --glass: rgba(32, 32, 35, 0.5);
+  --glass-hover: rgba(32, 32, 35, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.15);
+
+  /* ---- Body Gradients & Telemetry ---- */
+  --body-bg-gradient: linear-gradient(135deg, #0f0f11 0%, #18181b 100%);
+  --grid-color-x: rgba(255, 255, 255, 0.01);
+  --grid-color-y: rgba(255, 255, 255, 0.015);
+  --scrollbar-thumb: #2d2d30;
+  --scrollbar-thumb-hover: #fafafa;
+
+  /* ---- Accent Color Overrides ---- */
+  --accent-purple: #f4f4f5;
+  --accent-purple-soft: #fafafa;
+  --accent-purple-deep: #e4e4e7;
+}
+
+.dark.theme-focus-mode {
+  /* ---- Backgrounds ---- */
+  --surface-0: #000000;
+  --surface-1: #080808;
+  --surface-2: #0f0f0f;
+  --surface-3: #1a1a1a;
+  --surface-4: #262626;
+
+  /* ---- Borders ---- */
+  --edge: #262626;
+  --edge-light: #3a3a3a;
+  --edge-accent: rgba(132, 204, 22, 0.4);
+
+  /* ---- Text ---- */
+  --fg: #ffffff;
+  --fg-2: #e5e5e5;
+  --fg-3: #a3a3a3;
+  --fg-4: #525252;
+
+  /* ---- Glass ---- */
+  --glass: rgba(0, 0, 0, 0.85);
+  --glass-hover: rgba(0, 0, 0, 0.95);
+  --glass-border: rgba(255, 255, 255, 0.15);
+
+  /* ---- Body Gradients & Telemetry ---- */
+  --body-bg-gradient: #000000;
+  --grid-color-x: transparent;
+  --grid-color-y: transparent;
+  --scrollbar-thumb: #262626;
+  --scrollbar-thumb-hover: #84cc16;
+
+  /* ---- Accent Color Overrides ---- */
+  --accent-purple: #84cc16;
+  --accent-purple-soft: #a3e635;
+  --accent-purple-deep: #65a30d;
+}
+
 

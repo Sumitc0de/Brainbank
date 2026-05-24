@@ -150,7 +150,7 @@ const fadeInUpProps = {
 };
 
 export default function LoginView() {
-  const { loginWithGoogle, loading, error: authError, theme, toggleTheme } = useAuthStore();
+  const { loginWithGoogle, bypassWithMock, loading, error: authError, theme, toggleTheme } = useAuthStore();
   const [activeResearchTab, setActiveResearchTab] = useState(0);
   
   // Interactive Upload Simulator State
@@ -166,6 +166,15 @@ export default function LoginView() {
       toast('Welcome to Brainbank!', 'success');
     } catch (err) {
       toast(err.message || 'Google authentication failed.', 'error');
+    }
+  };
+
+  const handleDeveloperBypass = async () => {
+    try {
+      await bypassWithMock();
+      toast('Welcome, Developer! Bypass successful.', 'success');
+    } catch (err) {
+      toast(err.message || 'Developer bypass failed.', 'error');
     }
   };
 
@@ -1163,6 +1172,14 @@ export default function LoginView() {
               <Lock size={9} className="text-purple" />
               <span>Secure stateless Google OAuth 2.0 validation</span>
             </div>
+
+            <button
+              type="button"
+              onClick={handleDeveloperBypass}
+              className="text-[10px] text-purple-soft hover:text-purple font-black uppercase tracking-wider cursor-pointer underline pt-2.5 block mx-auto transition-colors"
+            >
+              🛠️ Developer Bypass Mode
+            </button>
 
             {loading && (
               <div className="flex items-center justify-center gap-2 text-xs text-fg-2 animate-pulse">

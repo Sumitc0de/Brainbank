@@ -13,6 +13,61 @@ const useAuthStore = create((set, get) => ({
   loading: false,
   error: null,
   theme: localStorage.getItem('brainbank_theme') || 'light',
+  themeStyle: localStorage.getItem('brainbank_theme_style') || 'sunset-quest',
+  glowIntensity: Number(localStorage.getItem('brainbank_glow_intensity') || '50'),
+  reduceAnimations: localStorage.getItem('brainbank_reduce_animations') === 'true',
+  compactMode: localStorage.getItem('brainbank_compact_mode') === 'true',
+
+  setThemeStyle: (style) => {
+    localStorage.setItem('brainbank_theme_style', style);
+    set({ themeStyle: style });
+    get().syncDOM();
+  },
+
+  setGlowIntensity: (intensity) => {
+    localStorage.setItem('brainbank_glow_intensity', intensity);
+    set({ glowIntensity: intensity });
+    get().syncDOM();
+  },
+
+  setReduceAnimations: (reduce) => {
+    localStorage.setItem('brainbank_reduce_animations', reduce ? 'true' : 'false');
+    set({ reduceAnimations: reduce });
+    get().syncDOM();
+  },
+
+  setCompactMode: (compact) => {
+    localStorage.setItem('brainbank_compact_mode', compact ? 'true' : 'false');
+    set({ compactMode: compact });
+  },
+
+  syncDOM: () => {
+    const { theme, themeStyle, glowIntensity, reduceAnimations } = get();
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+
+    // sync theme style
+    const classes = Array.from(document.documentElement.classList);
+    classes.forEach(cls => {
+      if (cls.startsWith('theme-')) {
+        document.documentElement.classList.remove(cls);
+      }
+    });
+    document.documentElement.classList.add(`theme-${themeStyle}`);
+
+    // sync glow intensity
+    document.documentElement.style.setProperty('--glow-opacity', (glowIntensity / 100).toFixed(2));
+
+    // sync reduce animations
+    if (reduceAnimations) {
+      document.documentElement.classList.add('reduce-animations');
+    } else {
+      document.documentElement.classList.remove('reduce-animations');
+    }
+  },
 
   toggleTheme: (event) => {
     const currentTheme = get().theme;
@@ -20,12 +75,8 @@ const useAuthStore = create((set, get) => ({
 
     const updateDOM = () => {
       localStorage.setItem('brainbank_theme', nextTheme);
-      if (nextTheme === 'dark') {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
       set({ theme: nextTheme });
+      get().syncDOM();
     };
 
     if (!document.startViewTransition || !event || typeof event.clientX !== 'number') {
