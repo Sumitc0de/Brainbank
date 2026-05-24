@@ -15,6 +15,7 @@ const OPTIONAL_VARS = [
   { key: 'NODE_ENV', fallback: 'development' },
   { key: 'ALLOWED_ORIGINS', fallback: '' },
   { key: 'GOOGLE_CLIENT_ID', fallback: '' },
+  { key: 'GOOGLE_CLIENT_IDS', fallback: '' },
   { key: 'GROQ_API_KEY', fallback: '' },
   { key: 'GROQ_MODEL', fallback: 'llama-3.3-70b-versatile' },
   { key: 'CLOUDINARY_CLOUD_NAME', fallback: '' },

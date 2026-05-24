@@ -21,6 +21,7 @@ export default function App() {
   const syncDOM = useAuthStore((s) => s.syncDOM);
   const compactMode = useAuthStore((s) => s.compactMode);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID?.trim();
 
   // Check user session once on mount
   useEffect(() => {
@@ -43,8 +44,6 @@ export default function App() {
       fetchStats();
     }
   }, [isAuthenticated, ideas, fetchStats]);
-
-  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'mock-google-client-id';
 
   // Premium loader to prevent splash flicker
   if (loading) {
@@ -73,27 +72,33 @@ export default function App() {
   }
 
   if (!isAuthenticated) {
-    return (
-      <GoogleOAuthProvider clientId={googleClientId}>
-        <LoginView />
+    const loginView = (
+      <>
+        <LoginView googleConfigured={Boolean(googleClientId)} />
         <ToastContainer />
+      </>
+    );
+
+    return googleClientId ? (
+      <GoogleOAuthProvider clientId={googleClientId}>
+        {loginView}
       </GoogleOAuthProvider>
+    ) : (
+      loginView
     );
   }
 
   return (
-    <GoogleOAuthProvider clientId={googleClientId}>
-      <div className={`flex h-screen bg-surface-0 text-fg overflow-hidden ${compactMode ? 'compact-layout' : ''}`}>
-        {/* Sidebar */}
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+    <div className={`flex h-screen bg-surface-0 text-fg overflow-hidden ${compactMode ? 'compact-layout' : ''}`}>
+      {/* Sidebar */}
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-        {/* Main content */}
-        <MainWorkspace onMenuToggle={() => setSidebarOpen(true)} />
+      {/* Main content */}
+      <MainWorkspace onMenuToggle={() => setSidebarOpen(true)} />
 
-        {/* Overlays */}
-        <AddIdeaModal />
-        <ToastContainer />
-      </div>
-    </GoogleOAuthProvider>
+      {/* Overlays */}
+      <AddIdeaModal />
+      <ToastContainer />
+    </div>
   );
 }

@@ -149,7 +149,7 @@ const fadeInUpProps = {
   transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] }
 };
 
-export default function LoginView() {
+export default function LoginView({ googleConfigured = true }) {
   const { loginWithGoogle, bypassWithMock, loading, error: authError, theme, toggleTheme } = useAuthStore();
   const [activeResearchTab, setActiveResearchTab] = useState(0);
   
@@ -1158,17 +1158,23 @@ export default function LoginView() {
 
           <div className="max-w-xs mx-auto space-y-4 pt-2">
             {/* Pure Clean Google Login Button matching Premium Warm Theme UI */}
-            <div className="flex justify-center w-full max-w-[280px] mx-auto shadow-sm rounded-full overflow-hidden border border-edge/60 bg-white hover:border-purple/40 hover:shadow-md transition-all duration-300">
-              <GoogleLogin
-                onSuccess={handleGoogleSuccess}
-                onError={() => toast('Google Sign-In was cancelled or failed.', 'error')}
-                theme="outline"
-                size="large"
-                text="continue_with"
-                shape="pill"
-                width="280px"
-              />
-            </div>
+            {googleConfigured ? (
+              <div className="flex justify-center w-full max-w-[280px] mx-auto shadow-sm rounded-full overflow-hidden border border-edge/60 bg-white hover:border-purple/40 hover:shadow-md transition-all duration-300">
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={() => toast('Google Sign-In was cancelled or failed.', 'error')}
+                  theme="outline"
+                  size="large"
+                  text="continue_with"
+                  shape="pill"
+                  width="280px"
+                />
+              </div>
+            ) : (
+              <div className="w-full max-w-[280px] mx-auto rounded-full border border-rose/25 bg-rose/10 px-4 py-3 text-xs font-bold text-rose">
+                Google login is not configured.
+              </div>
+            )}
 
             <div className="flex items-center justify-center gap-1.5 text-[9px] text-fg-3 font-semibold pt-1">
               <Lock size={9} className="text-purple" />

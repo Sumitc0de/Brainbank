@@ -14,6 +14,14 @@ const REFRESH_TOKEN_EXPIRY = '30d';
 const isSecureCookie = () => process.env.NODE_ENV === 'production';
 const sameSiteCookiePolicy = () => (isSecureCookie() ? 'none' : 'lax');
 
+function getGoogleClientIds() {
+  const configuredIds = process.env.GOOGLE_CLIENT_IDS || process.env.GOOGLE_CLIENT_ID || '';
+  return configuredIds
+    .split(',')
+    .map((id) => id.trim())
+    .filter(Boolean);
+}
+
 // ── Cookie options ──────────────────────────────────────────
 function accessCookieOpts() {
   return {
@@ -105,23 +113,32 @@ export async function googleLogin(req, res) {
       return res.status(400).json({ success: false, error: 'Google ID token is required.' });
     }
 
-    const clientId = process.env.GOOGLE_CLIENT_ID;
-    if (!clientId) {
+    const clientIds = getGoogleClientIds();
+    if (clientIds.length === 0) {
       return res.status(500).json({
         success: false,
         error: 'Google Client ID is not configured on the server.',
+        code: 'GOOGLE_CLIENT_ID_MISSING',
       });
     }
 
-    const googleClient = new OAuth2Client(clientId);
+    const googleClient = new OAuth2Client(clientIds[0]);
     const ticket = await googleClient.verifyIdToken({
       idToken: token,
-      audience: clientId,
+      audience: clientIds,
     });
 
     const payload = ticket.getPayload();
     if (!payload || !payload.email) {
       return res.status(400).json({ success: false, error: 'Invalid ID token payload.' });
+    }
+
+    if (payload.email_verified === false) {
+      return res.status(401).json({
+        success: false,
+        error: 'Google email is not verified.',
+        code: 'GOOGLE_EMAIL_NOT_VERIFIED',
+      });
     }
 
     const { sub: googleId, email, name, picture } = payload;
