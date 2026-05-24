@@ -1,8 +1,9 @@
-import { useState } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
+import { motion } from 'framer-motion';
 import { 
   Sparkles, Terminal, LogIn, Cpu, Award, HelpCircle, Crown, 
-  Star, Layers, ShieldCheck, CheckCircle2, ChevronRight, MessageSquare
+  Star, Layers, CheckCircle2, ChevronRight, MessageSquare,
+  ShieldAlert, ShieldCheck, Zap, Lock, DollarSign
 } from 'lucide-react';
 import useAuthStore from '../../store/useAuthStore';
 import { toast } from '../ui/Toast';
@@ -38,6 +39,38 @@ const FEATURES = [
   }
 ];
 
+const PRICING_PLANS = [
+  {
+    name: "Hobbyist",
+    price: "0",
+    desc: "Perfect for testing raw ideas and mapping out initial features.",
+    features: [
+      "Up to 5 active startup ideas",
+      "Standard AI PRD generation",
+      "ICE priority matrix scoring",
+      "Basic file attachments (up to 5MB)",
+      "Standard local save files"
+    ],
+    cta: "Start Building Free",
+    popular: false,
+  },
+  {
+    name: "Founder / Pro",
+    price: "12",
+    desc: "Built for active builders launching and scaling multiple ventures.",
+    features: [
+      "Unlimited startup ideas",
+      "Advanced Groq-powered PRDs",
+      "Priority queue & auto-promotions",
+      "Premium Cloudinary attachments (up to 20MB)",
+      "Instant PDF spec sheet downloads",
+      "Priority feature roadmap requests"
+    ],
+    cta: "Unlock Founder Tier",
+    popular: true,
+  }
+];
+
 const REVIEWS = [
   {
     name: "Sumit Vishwa",
@@ -62,9 +95,24 @@ const REVIEWS = [
   }
 ];
 
+// Animation presets
+const fadeInUp = {
+  initial: { opacity: 0, y: 32 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-80px" },
+  transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] }
+};
+
+const staggerChildren = {
+  animate: {
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
 export default function LoginView() {
-  const { loginWithGoogle, bypassWithMock, loading, error: authError } = useAuthStore();
-  const [showDeveloperBypass, setShowDeveloperBypass] = useState(false);
+  const { loginWithGoogle, loading, error: authError } = useAuthStore();
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
@@ -72,15 +120,6 @@ export default function LoginView() {
       toast('Welcome to Brainbank!', 'success');
     } catch (err) {
       toast(err.message || 'Google authentication failed.', 'error');
-    }
-  };
-
-  const handleMockBypass = async () => {
-    try {
-      await bypassWithMock();
-      toast('Developer bypass active. Sandbox mode initiated!', 'success');
-    } catch (err) {
-      toast(err.message || 'Developer bypass failed.', 'error');
     }
   };
 
@@ -98,9 +137,10 @@ export default function LoginView() {
 
   return (
     <div 
-      className="relative min-h-screen w-full overflow-x-hidden select-none font-sans text-fg pb-16"
+      className="relative min-h-screen w-full overflow-x-hidden select-none font-sans text-fg pb-16 scroll-smooth"
       style={loginBackgroundStyle}
     >
+      
       {/* Warm Ambient Glows */}
       <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-purple/6 blur-[120px] pointer-events-none" />
       <div className="absolute top-[40%] right-[-10%] w-[45%] h-[45%] rounded-full bg-purple-soft/6 blur-[120px] pointer-events-none" />
@@ -117,31 +157,31 @@ export default function LoginView() {
 
           <nav className="hidden sm:flex items-center gap-6 text-xs font-semibold text-fg-2">
             <a href="#features" className="hover:text-purple transition-colors">Features</a>
+            <a href="#pricing" className="hover:text-purple transition-colors">Pricing</a>
             <a href="#reviews" className="hover:text-purple transition-colors">Reviews</a>
-            <button 
-              onClick={() => setShowDeveloperBypass(!showDeveloperBypass)}
-              className="hover:text-purple transition-colors text-left flex items-center gap-1"
-            >
-              🔧 Dev Mode
-            </button>
           </nav>
 
           <button 
             type="button"
             onClick={scrollToAuth}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-purple hover:bg-purple-deep text-white font-bold text-xs shadow-md transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-purple hover:bg-purple-deep text-white font-bold text-xs shadow-md transition-colors cursor-pointer"
           >
             <LogIn size={12} />
-            Sign In
+            Start Building
           </button>
         </div>
       </header>
 
       {/* ================= HERO SECTION ================= */}
-      <section className="max-w-6xl mx-auto px-6 pt-16 md:pt-24 grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
+      <section className="max-w-6xl mx-auto px-6 pt-16 md:pt-28 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         
         {/* Left Side Info */}
-        <div className="md:col-span-7 space-y-6 text-left">
+        <motion.div 
+          className="lg:col-span-7 space-y-6 text-left"
+          initial={{ opacity: 0, x: -40 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-purple/30 bg-purple/10 text-purple text-xs font-bold uppercase tracking-wider shadow-glow-purple/20">
             <Sparkles size={12} className="animate-spin" style={{ animationDuration: '4s' }} />
             The Founder OS
@@ -155,21 +195,21 @@ export default function LoginView() {
           </h1>
           
           <p className="text-fg-2 text-base sm:text-lg max-w-lg leading-relaxed">
-            Brainbank is a premium gamified founder workspace. Capture startup thoughts, score them with ICE priority models, draft detailed AI PRDs, and earn developer level milestones on a beautifully responsive dashboard.
+            Brainbank is the ultimate gamified workspace for serious founders. Structure startup ideas, prioritize pipelines with ICE analysis, generate complete AI PRDs, and level up your launcher profile.
           </p>
 
           <div className="flex items-center gap-3 pt-2">
             <button 
               type="button"
               onClick={scrollToAuth}
-              className="flex items-center gap-1.5 px-5 py-3 rounded-xl bg-purple hover:bg-purple-deep text-white font-bold text-sm shadow-md transition-all active:scale-[0.98] cursor-pointer"
+              className="flex items-center gap-1.5 px-5 py-3.5 rounded-xl bg-purple hover:bg-purple-deep text-white font-bold text-sm shadow-md transition-all active:scale-[0.98] cursor-pointer"
             >
-              Start Your Build Quest
+              Get Started Free
               <ChevronRight size={16} />
             </button>
             <a 
               href="#features" 
-              className="px-5 py-3 rounded-xl border border-edge bg-surface-2/60 hover:bg-surface-3/60 text-fg-2 hover:text-fg font-bold text-sm transition-all shadow-card"
+              className="px-5 py-3.5 rounded-xl border border-edge bg-surface-2/60 hover:bg-surface-3/60 text-fg-2 hover:text-fg font-bold text-sm transition-all shadow-card"
             >
               Explore Features
             </a>
@@ -180,96 +220,77 @@ export default function LoginView() {
             <span className="flex items-center gap-1.5"><CheckCircle2 size={13} className="text-green" /> No credit card required</span>
             <span className="flex items-center gap-1.5"><CheckCircle2 size={13} className="text-green" /> Immediate AI deliverables</span>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Right Side Glass Auth Card */}
-        <div id="auth-section" className="md:col-span-5 w-full scroll-mt-24">
-          <div className="w-full rounded-3xl border border-edge bg-surface-2/85 p-6 sm:p-8 backdrop-blur-xl shadow-elevated space-y-6">
-            
-            {/* Header */}
-            <div className="text-center space-y-2">
-              <div className="h-11 w-11 rounded-2xl bg-gradient-to-tr from-purple via-purple-soft to-green mx-auto flex items-center justify-center text-white font-extrabold text-xl shadow-lg shadow-purple/25">
-                <Crown size={18} className="text-white" />
+        {/* Right Side Visual Mockup (Interactive gamified level preview card) */}
+        <motion.div 
+          className="lg:col-span-5 w-full flex justify-center"
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
+        >
+          <div className="relative w-full max-w-sm rounded-3xl border border-edge bg-surface-2/80 p-6 shadow-elevated backdrop-blur-xl">
+            <div className="flex items-center justify-between mb-4 pb-3 border-b border-edge/60">
+              <div className="flex items-center gap-2">
+                <Crown size={15} className="text-purple animate-pulse" />
+                <span className="text-xs font-bold text-fg">Startup Dashboard</span>
               </div>
-              <h2 className="text-lg font-bold text-fg pt-1">Sync Your Workspace</h2>
-              <p className="text-xs text-fg-3">Sign in securely with Google to load your developer level</p>
+              <span className="text-[10px] px-2 py-0.5 rounded-md bg-green/10 border border-green/20 text-green font-bold uppercase">Online</span>
             </div>
 
-            {/* Auth Actions */}
-            <div className="space-y-4 pt-1">
-              
-              {/* Proper Clean Google Login Button */}
-              <div className="flex justify-center w-full">
-                <GoogleLogin
-                  onSuccess={handleGoogleSuccess}
-                  onError={() => toast('Google Sign-In was cancelled or failed.', 'error')}
-                  theme="outline"
-                  size="large"
-                  text="signin_with"
-                  shape="pill"
-                  width="320px"
-                />
+            {/* Level status progress bar mockup */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="text-sm font-black text-fg">Level 4: Builder</h4>
+                  <p className="text-[10px] text-fg-3">Active Quest pipeline</p>
+                </div>
+                <div className="text-right">
+                  <span className="text-xs font-mono text-purple font-bold flex items-center gap-1"><Zap size={11} /> 350 XP</span>
+                </div>
               </div>
 
-              {/* Developer Bypass Option */}
-              {showDeveloperBypass && (
-                <div className="space-y-3 pt-2">
-                  <div className="relative flex items-center justify-center py-2 text-xs">
-                    <span className="absolute inset-x-0 h-px bg-edge" />
-                    <span className="relative px-3 bg-surface-2 text-fg-3 font-semibold text-[10px] uppercase tracking-wider">Dev Mode Bypass</span>
-                  </div>
+              {/* Mock progress bar */}
+              <div className="h-2 w-full rounded-full bg-surface-3 overflow-hidden border border-edge/40">
+                <div className="h-full rounded-full bg-gradient-to-r from-purple via-purple-soft to-green" style={{ width: '65%' }} />
+              </div>
 
-                  <button
-                    type="button"
-                    onClick={handleMockBypass}
-                    disabled={loading}
-                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-edge bg-surface-1 hover:bg-surface-3 text-fg font-bold text-xs cursor-pointer shadow-card transition-all active:scale-[0.98] disabled:opacity-50"
-                  >
-                    <Terminal size={14} className="text-purple-soft animate-pulse" />
-                    Bypass Mock Login (Developer)
-                  </button>
-
-                  <p className="text-[10px] text-fg-4 text-center leading-relaxed">
-                    🔧 Developer option allows testing database mapping, JWT handling, and attachments on local environments without Google Client credentials.
-                  </p>
+              {/* Project metrics */}
+              <div className="grid grid-cols-2 gap-3 pt-2">
+                <div className="rounded-xl border border-edge bg-surface-0/60 p-3 shadow-card">
+                  <p className="text-[10px] text-fg-3">Active Ideas</p>
+                  <p className="text-lg font-black text-fg mt-0.5">8</p>
                 </div>
-              )}
-
-              {/* Loader */}
-              {loading && (
-                <div className="flex items-center justify-center gap-2 text-xs text-fg-3 animate-pulse">
-                  <LogIn size={12} className="animate-bounce text-purple" />
-                  Verifying account credentials...
+                <div className="rounded-xl border border-edge bg-surface-0/60 p-3 shadow-card">
+                  <p className="text-[10px] text-fg-3">PRDs Completed</p>
+                  <p className="text-lg font-black text-fg mt-0.5">5</p>
                 </div>
-              )}
+              </div>
 
-              {/* Auth error feedback */}
-              {authError && (
-                <div className="text-xs text-red bg-red/10 border border-red/20 rounded-xl p-3 text-center leading-relaxed">
-                  ⚠️ {authError}
+              {/* Latest quest log */}
+              <div className="rounded-xl border border-edge bg-surface-0/70 p-3 space-y-2 shadow-card">
+                <p className="text-[10px] font-bold text-fg-3 uppercase tracking-wider">Latest Action Logs</p>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="truncate text-fg font-medium">1. Dynamic ICE Scoring</span>
+                  <span className="text-purple font-bold">+5 XP</span>
                 </div>
-              )}
+                <div className="flex items-center justify-between text-xs">
+                  <span className="truncate text-fg font-medium">2. AI Copilot Drafted Spec</span>
+                  <span className="text-purple font-bold">+10 XP</span>
+                </div>
+              </div>
             </div>
-
-            {/* Footer help */}
-            <div className="border-t border-edge pt-4 text-center">
-              <span 
-                onClick={() => toast('Ensure VITE_GOOGLE_CLIENT_ID (frontend) and GOOGLE_CLIENT_ID (backend) match your Google Cloud Console Client credentials.', 'info')}
-                className="inline-flex items-center gap-1.5 text-[9px] text-fg-4 hover:text-purple cursor-pointer"
-              >
-                <HelpCircle size={10} />
-                Need help setting up Google Client IDs?
-              </span>
-            </div>
-
           </div>
-        </div>
+        </motion.div>
 
       </section>
 
       {/* ================= FEATURES SECTION ================= */}
-      <section id="features" className="max-w-6xl mx-auto px-6 pt-24 md:pt-32 scroll-mt-16">
-        <div className="text-center space-y-3 max-w-2xl mx-auto mb-16">
+      <section id="features" className="max-w-6xl mx-auto px-6 pt-28 md:pt-36 scroll-mt-16">
+        <motion.div 
+          className="text-center space-y-3 max-w-2xl mx-auto mb-16"
+          {...fadeInUp}
+        >
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-green/30 bg-green/10 text-green text-[11px] font-bold uppercase tracking-wider">
             <Layers size={11} />
             Fully Integrated Features
@@ -280,15 +301,22 @@ export default function LoginView() {
           <p className="text-sm text-fg-3">
             Say goodbye to disorganized spreadsheets. Brainbank integrates idea validation, priority analysis, documentation, and cloud resources in one beautifully cohesive flow.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          variants={staggerChildren}
+          initial="initial"
+          whileInView="animate"
+          viewport={{ once: true, margin: "-50px" }}
+        >
           {FEATURES.map((item) => (
-            <div 
+            <motion.div 
               key={item.title} 
-              className="flex items-start gap-4 p-5 rounded-2xl border border-edge bg-surface-2/65 backdrop-blur-sm shadow-card transition-all duration-300 hover:border-purple/30 hover:bg-surface-2"
+              variants={fadeInUp}
+              className="flex items-start gap-4 p-5 rounded-2xl border border-edge bg-surface-2/65 backdrop-blur-sm shadow-card transition-all duration-300 hover:border-purple/30 hover:bg-surface-2 hover:scale-[1.01]"
             >
-              <div className={`p-3 rounded-xl bg-surface-0 border border-edge shrink-0 text-fg`}>
+              <div className="p-3 rounded-xl bg-surface-0 border border-edge shrink-0 text-fg">
                 <item.icon size={20} className={item.color} />
               </div>
               <div className="space-y-1.5">
@@ -300,14 +328,90 @@ export default function LoginView() {
                 </div>
                 <p className="text-xs text-fg-2 leading-relaxed">{item.desc}</p>
               </div>
-            </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </section>
+
+      {/* ================= PRICING SECTION ================= */}
+      <section id="pricing" className="max-w-5xl mx-auto px-6 pt-28 md:pt-36 scroll-mt-16">
+        <motion.div 
+          className="text-center space-y-3 max-w-2xl mx-auto mb-16"
+          {...fadeInUp}
+        >
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-purple-soft/30 bg-purple-soft/10 text-purple-soft text-[11px] font-bold uppercase tracking-wider">
+            <DollarSign size={11} />
+            Subscription Tiers
+          </div>
+          <h2 className="text-3xl font-extrabold text-fg sm:text-4xl">
+            Sleek pricing. Simple options.
+          </h2>
+          <p className="text-sm text-fg-3">
+            Choose the best plan to scope your quests. Start for free and upgrade as your projects scale.
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          {PRICING_PLANS.map((plan, idx) => (
+            <motion.div
+              key={idx}
+              {...fadeInUp}
+              className={`relative rounded-3xl border p-8 flex flex-col justify-between shadow-card backdrop-blur-sm ${
+                plan.popular 
+                  ? 'border-purple/40 bg-white/70 shadow-elevated scale-[1.02] md:scale-[1.03]' 
+                  : 'border-edge bg-surface-2/65'
+              }`}
+            >
+              {plan.popular && (
+                <span className="absolute top-0 right-6 -translate-y-1/2 px-3 py-1 rounded-full bg-gradient-to-r from-purple to-purple-soft text-white text-[9px] font-black uppercase tracking-wider">
+                  Popular Option
+                </span>
+              )}
+
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-lg font-black text-fg">{plan.name}</h3>
+                  <p className="text-xs text-fg-3 mt-1 leading-relaxed">{plan.desc}</p>
+                </div>
+
+                <div className="flex items-baseline gap-1">
+                  <span className="text-3xl font-extrabold text-fg">$</span>
+                  <span className="text-5xl font-black text-fg leading-none">{plan.price}</span>
+                  <span className="text-xs font-semibold text-fg-3">/ month</span>
+                </div>
+
+                <ul className="space-y-3 pt-2">
+                  {plan.features.map((feature, i) => (
+                    <li key={i} className="flex items-start gap-2.5 text-xs text-fg-2 font-medium">
+                      <CheckCircle2 size={14} className="text-green mt-0.5 shrink-0" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <button
+                type="button"
+                onClick={scrollToAuth}
+                className={`w-full py-3 rounded-xl font-bold text-xs mt-8 transition-all active:scale-[0.98] shadow-md cursor-pointer ${
+                  plan.popular
+                    ? 'bg-purple hover:bg-purple-deep text-white'
+                    : 'bg-surface-3 hover:bg-surface-4 text-fg border border-edge'
+                }`}
+              >
+                {plan.cta}
+              </button>
+            </motion.div>
           ))}
         </div>
       </section>
 
       {/* ================= REVIEWS SECTION ================= */}
-      <section id="reviews" className="max-w-6xl mx-auto px-6 pt-24 md:pt-32 scroll-mt-16">
-        <div className="text-center space-y-3 max-w-2xl mx-auto mb-16">
+      <section id="reviews" className="max-w-6xl mx-auto px-6 pt-28 md:pt-36 scroll-mt-16">
+        <motion.div 
+          className="text-center space-y-3 max-w-2xl mx-auto mb-16"
+          {...fadeInUp}
+        >
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-purple-soft/30 bg-purple-soft/10 text-purple-soft text-[11px] font-bold uppercase tracking-wider">
             <MessageSquare size={11} />
             Founder Testimonials
@@ -318,16 +422,17 @@ export default function LoginView() {
           <p className="text-sm text-fg-3">
             See how entrepreneurs and makers are utilizing Brainbank to organize their building quest pipeline.
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {REVIEWS.map((item, idx) => (
-            <div 
+            <motion.div 
               key={idx}
+              {...fadeInUp}
+              transition={{ delay: idx * 0.1, duration: 0.5 }}
               className="flex flex-col justify-between p-6 rounded-2xl border border-edge bg-surface-2/65 backdrop-blur-sm shadow-card"
             >
               <div className="space-y-4">
-                {/* Stars */}
                 <div className="flex items-center gap-0.5 text-amber">
                   {[...Array(item.rating)].map((_, i) => (
                     <Star key={i} size={14} fill="currentColor" />
@@ -338,7 +443,6 @@ export default function LoginView() {
                 </p>
               </div>
 
-              {/* User Profiling */}
               <div className="flex items-center gap-3 pt-6 border-t border-edge/40 mt-6">
                 <img 
                   src={item.avatar} 
@@ -350,9 +454,71 @@ export default function LoginView() {
                   <p className="text-[10px] text-fg-3 truncate">{item.role}</p>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
+      </section>
+
+      {/* ================= FINAL CALL TO ACTION / AUTH GATED SECTION ================= */}
+      <section id="auth-section" className="max-w-4xl mx-auto px-6 pt-32 scroll-mt-24">
+        <motion.div 
+          className="w-full rounded-3xl border border-edge bg-surface-2/80 p-8 sm:p-12 backdrop-blur-xl shadow-elevated text-center space-y-8 relative overflow-hidden"
+          {...fadeInUp}
+        >
+          {/* Subtle Glows */}
+          <div className="absolute -top-12 -left-12 w-24 h-24 bg-purple/10 rounded-full blur-xl pointer-events-none" />
+          <div className="absolute -bottom-12 -right-12 w-24 h-24 bg-green/10 rounded-full blur-xl pointer-events-none" />
+
+          <div className="max-w-xl mx-auto space-y-3">
+            <div className="inline-flex h-11 w-11 rounded-2xl bg-gradient-to-tr from-purple via-purple-soft to-green flex items-center justify-center text-white font-extrabold text-xl shadow-lg shadow-purple/25 mx-auto">
+              <Crown size={18} className="text-white" />
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-fg">Ready to build your next venture?</h2>
+            <p className="text-xs text-fg-3">
+              Join founders mapping out concepts, generating rich specs, and earning building XP on Brainbank. Sign in now to sync your quest.
+            </p>
+          </div>
+
+          <div className="max-w-xs mx-auto space-y-4">
+            {/* Pure Proper Google Login Button */}
+            <div className="flex justify-center w-full shadow-md rounded-full bg-white relative">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => toast('Google Sign-In was cancelled or failed.', 'error')}
+                theme="outline"
+                size="large"
+                text="continue_with"
+                shape="pill"
+                width="280px"
+              />
+            </div>
+
+            <div className="flex items-center justify-center gap-1.5 text-[9px] text-fg-4 font-semibold">
+              <Lock size={9} className="text-green" />
+              <span>Secure stateless Google OAuth 2.0 validation</span>
+            </div>
+
+            {loading && (
+              <div className="flex items-center justify-center gap-2 text-xs text-fg-3 animate-pulse">
+                <LogIn size={12} className="animate-bounce text-purple" />
+                Synchronizing founder dashboard...
+              </div>
+            )}
+
+            {authError && (
+              <div className="text-xs text-red bg-red/10 border border-red/20 rounded-xl p-3 text-center leading-relaxed">
+                ⚠️ {authError}
+              </div>
+            )}
+          </div>
+
+          {/* Setup tips */}
+          <div className="text-[10px] text-fg-4 flex items-center justify-center gap-1.5">
+            <ShieldCheck size={12} className="text-green" />
+            <span>Developer credentials configured and verified</span>
+          </div>
+
+        </motion.div>
       </section>
 
       {/* ================= FOOTER ================= */}
