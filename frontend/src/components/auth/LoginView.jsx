@@ -195,7 +195,7 @@ export default function LoginView() {
   };
 
   return (
-    <div className="relative h-screen w-full overflow-y-auto overflow-x-hidden select-none font-sans bg-[linear-gradient(135deg,rgba(255,247,223,0.98),rgba(255,241,209,0.95))] text-fg pb-6 scroll-smooth">
+    <div className="relative h-screen w-full overflow-y-auto overflow-x-hidden select-none font-sans bg-surface-0 text-fg pb-6 scroll-smooth transition-colors duration-300">
       
       {/* Cinematic warm grid overlay */}
       <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,rgba(45,111,41,0.02)_0_1px,transparent_1px_40px),repeating-linear-gradient(0deg,rgba(223,32,70,0.015)_0_1px,transparent_1px_40px)] pointer-events-none" />
@@ -218,6 +218,7 @@ export default function LoginView() {
           <nav className="hidden sm:flex items-center gap-8 text-xs font-semibold text-fg-2">
             <a href="#features" className="hover:text-purple transition-colors">Features</a>
             <a href="#workflow" className="hover:text-purple transition-colors">Workflow</a>
+            <a href="#pricing" className="hover:text-purple transition-colors">Pricing</a>
             <a href="#reviews" className="hover:text-purple transition-colors">Reviews</a>
           </nav>
 
@@ -803,12 +804,12 @@ export default function LoginView() {
       </section>
 
       {/* ================= PRICING SECTION ================= */}
-      <section id="pricing" className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] bg-zinc-950 py-24 border-y border-zinc-900 scroll-mt-20 overflow-hidden text-zinc-100 flex flex-col justify-center items-center">
+      <section id="pricing" className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] bg-surface-1 py-24 border-y border-edge scroll-mt-20 overflow-hidden text-fg flex flex-col justify-center items-center transition-all duration-300">
         
         {/* Cinematic dark theme mesh glow backdrops */}
         <div className="absolute top-[-10%] left-[20%] w-[50%] h-[40%] rounded-full bg-purple/10 blur-[130px] pointer-events-none" />
         <div className="absolute bottom-[-10%] right-[20%] w-[50%] h-[40%] rounded-full bg-purple-soft/5 blur-[130px] pointer-events-none" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#27272a04_1px,transparent_1px),linear-gradient(to_bottom,#27272a08_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--grid-color-x)_1px,transparent_1px),linear-gradient(to_bottom,var(--grid-color-y)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
 
         <div className="max-w-5xl mx-auto px-6 w-full relative z-10">
           <motion.div 
@@ -819,10 +820,10 @@ export default function LoginView() {
               <DollarSign size={11} />
               Subscription Tiers
             </div>
-            <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
+            <h2 className="text-3xl font-extrabold text-fg sm:text-4xl">
               Sleek pricing. Simple options.
             </h2>
-            <p className="text-sm text-zinc-400 leading-relaxed">
+            <p className="text-sm text-fg-2 leading-relaxed">
               Choose the best plan to scope your startup quests. Start for free and upgrade as your projects scale.
             </p>
           </motion.div>
@@ -835,57 +836,57 @@ export default function LoginView() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.05, duration: 0.5, ease: "easeOut" }}
-              className="relative rounded-3xl border border-zinc-900 bg-zinc-950/40 p-6 lg:p-7 flex flex-col justify-between shadow-2xl transition-all duration-300 hover:scale-[1.01] hover:border-zinc-800/80 hover:bg-zinc-900/20"
+              className="relative rounded-3xl border border-edge bg-surface-2/45 p-6 lg:p-7 flex flex-col justify-between shadow-card transition-all duration-300 hover:scale-[1.01] hover:border-edge-light hover:bg-surface-2"
             >
               <div className="space-y-5">
                 <div className="space-y-1">
-                  <h3 id="5jlwm8" className="text-xl font-black text-white">Free</h3>
-                  <p id="2mjlwm" className="text-[11px] text-zinc-400 leading-relaxed">Perfect for storing and testing startup ideas.</p>
+                  <h3 id="5jlwm8" className="text-xl font-black text-fg">Free</h3>
+                  <p id="2mjlwm" className="text-[11px] text-fg-2 leading-relaxed">Perfect for storing and testing startup ideas.</p>
                 </div>
 
-                <div id="7jlwm2" className="flex items-baseline gap-1 pt-1 text-white">
+                <div id="7jlwm2" className="flex items-baseline gap-1 pt-1 text-fg">
                   <span className="text-3xl font-extrabold">₹0</span>
-                  <span className="text-xs font-semibold text-zinc-500"> / month</span>
+                  <span className="text-xs font-semibold text-fg-3"> / month</span>
                 </div>
 
-                <div className="border-t border-zinc-900/60 my-1" />
+                <div className="border-t border-edge/60 my-1" />
 
                 {/* Visual Limit Indicator */}
-                <div className="px-2.5 py-2 rounded-lg bg-zinc-900/40 border border-zinc-900 space-y-1">
-                  <div className="flex justify-between text-[9px] text-zinc-400 font-medium">
+                <div className="px-2.5 py-2 rounded-lg bg-surface-3/30 border border-edge/60 space-y-1">
+                  <div className="flex justify-between text-[9px] text-fg-2 font-medium">
                     <span className="flex items-center gap-1"><Sparkles size={9} className="text-purple" /> Daily AI Requests</span>
                     <span>2 / 10 used</span>
                   </div>
-                  <div className="h-1 w-full bg-zinc-800 rounded-full overflow-hidden">
+                  <div className="h-1 w-full bg-surface-4/40 rounded-full overflow-hidden">
                     <div className="h-full bg-purple" style={{ width: '20%' }} />
                   </div>
                 </div>
 
                 {/* Compact Unified Features list */}
                 <ul className="space-y-2.5 text-xs font-medium pl-0.5">
-                  <li className="flex items-start gap-2.5 text-zinc-300">
+                  <li className="flex items-start gap-2.5 text-fg-2">
                     <CheckCircle2 size={13} className="text-purple mt-0.5 shrink-0" />
                     <span>Up to 5 active ideas</span>
                   </li>
-                  <li className="flex items-start gap-2.5 text-zinc-300">
+                  <li className="flex items-start gap-2.5 text-fg-2">
                     <CheckCircle2 size={13} className="text-purple mt-0.5 shrink-0" />
                     <span>10 AI requests/day (Basic PRD)</span>
                   </li>
-                  <li className="flex items-start gap-2.5 text-zinc-300">
+                  <li className="flex items-start gap-2.5 text-fg-2">
                     <CheckCircle2 size={13} className="text-purple mt-0.5 shrink-0" />
                     <span>Limited AI chatbot access</span>
                   </li>
-                  <li className="flex items-start gap-2.5 text-zinc-300">
+                  <li className="flex items-start gap-2.5 text-fg-2">
                     <CheckCircle2 size={13} className="text-purple mt-0.5 shrink-0" />
                     <span>Up to 5 uploads total (5MB limit)</span>
                   </li>
-                  <li className="flex items-start gap-2.5 text-zinc-300">
+                  <li className="flex items-start gap-2.5 text-fg-2">
                     <CheckCircle2 size={13} className="text-purple mt-0.5 shrink-0" />
                     <span>Basic research & todo tracking</span>
                   </li>
-                  <li className="flex items-start gap-2.5 text-zinc-600">
-                    <span className="text-zinc-700 shrink-0 text-xs mt-0.5 leading-none">❌</span>
-                    <span className="line-through text-zinc-500">No advanced AI workflows</span>
+                  <li className="flex items-start gap-2.5 text-fg-3/70">
+                    <span className="shrink-0 text-xs mt-0.5 leading-none">❌</span>
+                    <span className="line-through text-fg-4">No advanced AI workflows</span>
                   </li>
                 </ul>
               </div>
@@ -894,7 +895,7 @@ export default function LoginView() {
                 type="button"
                 onClick={scrollToAuth}
                 id="vjlwm7"
-                className="w-full py-2.5 rounded-xl font-bold text-xs mt-6 transition-all active:scale-[0.98] shadow-md cursor-pointer bg-gradient-to-r from-zinc-900 to-zinc-800 border border-zinc-800 text-zinc-300 hover:from-zinc-800 hover:to-zinc-700 hover:text-white"
+                className="w-full py-2.5 rounded-xl font-bold text-xs mt-6 transition-all active:scale-[0.98] shadow-md cursor-pointer bg-surface-3/50 hover:bg-surface-3 border border-edge text-fg"
               >
                 Start Free
               </button>
@@ -905,7 +906,7 @@ export default function LoginView() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15, duration: 0.5, ease: "easeOut" }}
-              className="relative rounded-3xl border border-purple/30 bg-zinc-950/50 p-6 lg:p-7 flex flex-col justify-between shadow-[0_0_30px_rgba(147,51,234,0.05)] transition-all duration-300 hover:scale-[1.01] hover:border-purple/50 hover:bg-zinc-900/30"
+              className="relative rounded-3xl border border-purple/30 bg-surface-2/65 p-6 lg:p-7 flex flex-col justify-between shadow-elevated transition-all duration-300 hover:scale-[1.01] hover:border-purple/50 hover:bg-surface-2"
             >
               <span id="pkjlwm" className="absolute top-0 right-6 -translate-y-1/2 px-3 py-1 rounded-full bg-purple text-white text-[9px] font-black uppercase tracking-wider shadow-md z-20">
                 MOST POPULAR
@@ -913,53 +914,53 @@ export default function LoginView() {
 
               <div className="space-y-5">
                 <div className="space-y-1">
-                  <h3 id="e4jlwm" className="text-lg font-black text-white">Pro</h3>
-                  <p id="mjlwm3" className="text-[11px] text-zinc-400 leading-relaxed">Built for founders actively validating and building products.</p>
+                  <h3 id="e4jlwm" className="text-lg font-black text-fg">Pro</h3>
+                  <p id="mjlwm3" className="text-[11px] text-fg-2 leading-relaxed">Built for founders actively validating and building products.</p>
                 </div>
 
-                <div id="zjlwm4" className="flex items-baseline gap-1 pt-1 text-white">
+                <div id="zjlwm4" className="flex items-baseline gap-1 pt-1 text-fg">
                   <span className="text-3xl font-extrabold">₹9</span>
-                  <span className="text-xs font-semibold text-zinc-500"> / month</span>
+                  <span className="text-xs font-semibold text-fg-3"> / month</span>
                 </div>
 
-                <div className="border-t border-zinc-900/60 my-1" />
+                <div className="border-t border-edge/60 my-1" />
 
                 {/* Visual Limit Indicator */}
-                <div className="px-2.5 py-2 rounded-lg bg-zinc-900/40 border border-zinc-900 space-y-1">
-                  <div className="flex justify-between text-[9px] text-zinc-400 font-medium">
+                <div className="px-2.5 py-2 rounded-lg bg-surface-3/30 border border-edge/60 space-y-1">
+                  <div className="flex justify-between text-[9px] text-fg-2 font-medium">
                     <span className="flex items-center gap-1"><Sparkles size={9} className="text-purple animate-pulse" /> Daily AI Requests</span>
                     <span>42 / 100 used</span>
                   </div>
-                  <div className="h-1 w-full bg-zinc-800 rounded-full overflow-hidden">
+                  <div className="h-1 w-full bg-surface-4/40 rounded-full overflow-hidden">
                     <div className="h-full bg-purple" style={{ width: '42%' }} />
                   </div>
                 </div>
 
                 {/* Compact Unified Features list */}
                 <ul className="space-y-2.5 text-xs font-medium pl-0.5">
-                  <li className="flex items-start gap-2.5 text-zinc-200">
+                  <li className="flex items-start gap-2.5 text-fg-2">
                     <CheckCircle2 size={13} className="text-purple mt-0.5 shrink-0" />
                     <span>Up to 12 active startup ideas</span>
                   </li>
-                  <li className="flex items-start gap-2.5 text-zinc-200">
+                  <li className="flex items-start gap-2.5 text-fg-2">
                     <CheckCircle2 size={13} className="text-purple mt-0.5 shrink-0" />
                     <span>100 AI requests/day (Enhanced PRD)</span>
                   </li>
-                  <li className="flex items-start gap-2.5 text-zinc-200">
+                  <li className="flex items-start gap-2.5 text-fg-2">
                     <CheckCircle2 size={13} className="text-purple mt-0.5 shrink-0" />
                     <span>AI chatbot assistant & Suggestions</span>
                   </li>
-                  <li className="flex items-start gap-2.5 text-zinc-200">
+                  <li className="flex items-start gap-2.5 text-fg-2">
                     <CheckCircle2 size={13} className="text-purple mt-0.5 shrink-0" />
                     <span>Up to 50 uploads (15MB limit)</span>
                   </li>
-                  <li className="flex items-start gap-2.5 text-zinc-200">
+                  <li className="flex items-start gap-2.5 text-fg-2">
                     <CheckCircle2 size={13} className="text-purple mt-0.5 shrink-0" />
                     <span>Cloud media storage & PDF exports</span>
                   </li>
-                  <li className="flex items-start gap-2.5 text-zinc-600">
-                    <span className="text-zinc-700 shrink-0 text-xs mt-0.5 leading-none">❌</span>
-                    <span className="line-through text-zinc-500">No unlimited uploads</span>
+                  <li className="flex items-start gap-2.5 text-fg-3/70">
+                    <span className="shrink-0 text-xs mt-0.5 leading-none">❌</span>
+                    <span className="line-through text-fg-4">No unlimited uploads</span>
                   </li>
                 </ul>
               </div>
@@ -979,7 +980,7 @@ export default function LoginView() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.25, duration: 0.5, ease: "easeOut" }}
-              className="relative rounded-3xl border border-purple-soft/45 bg-zinc-900/20 p-6 lg:p-7 flex flex-col justify-between shadow-[0_0_35px_rgba(168,85,247,0.1)] scale-[1.01] md:scale-[1.02] lg:scale-[1.03] transition-all duration-300 hover:scale-[1.02] md:hover:scale-[1.03] lg:hover:scale-[1.04] hover:border-purple-soft/60 hover:bg-zinc-900/35 hover:shadow-[0_0_45px_rgba(251,146,60,0.12)]"
+              className="relative rounded-3xl border border-purple-soft/45 bg-surface-3/30 p-6 lg:p-7 flex flex-col justify-between shadow-elevated scale-[1.01] md:scale-[1.02] lg:scale-[1.03] transition-all duration-300 hover:scale-[1.02] md:hover:scale-[1.03] lg:hover:scale-[1.04] hover:border-purple-soft/60 hover:bg-surface-3/50"
             >
               <span id="jjlwm5" className="absolute top-0 right-6 -translate-y-1/2 px-3 py-1 rounded-full bg-gradient-to-r from-purple-soft via-purple to-orange-400 text-white text-[9px] font-black uppercase tracking-wider shadow-lg z-20">
                 BEST VALUE
@@ -987,53 +988,53 @@ export default function LoginView() {
 
               <div className="space-y-5">
                 <div className="space-y-1">
-                  <h3 id="rjlwm8" className="text-lg font-black text-white flex items-center gap-1.5">
+                  <h3 id="rjlwm8" className="text-lg font-black text-fg flex items-center gap-1.5">
                     Ultra <Crown size={14} className="text-purple-soft animate-bounce" />
                   </h3>
-                  <p id="6jlwm1" className="text-[11px] text-zinc-300 leading-relaxed">The complete AI founder operating system for serious builders.</p>
+                  <p id="6jlwm1" className="text-[11px] text-fg-2 leading-relaxed">The complete AI founder operating system for serious builders.</p>
                 </div>
 
-                <div id="4jlwm0" className="flex items-baseline gap-1 pt-1 text-white">
+                <div id="4jlwm0" className="flex items-baseline gap-1 pt-1 text-fg">
                   <span className="text-3xl font-extrabold">₹99</span>
-                  <span className="text-xs font-semibold text-zinc-400"> / month</span>
+                  <span className="text-xs font-semibold text-fg-3"> / month</span>
                 </div>
 
-                <div className="border-t border-zinc-850 my-1" />
+                <div className="border-t border-edge/60 my-1" />
 
                 {/* Visual Limit Indicator */}
-                <div className="px-2.5 py-2 rounded-lg bg-zinc-900/60 border border-zinc-800/80 space-y-1">
-                  <div className="flex justify-between text-[9px] text-zinc-300 font-semibold">
+                <div className="px-2.5 py-2 rounded-lg bg-surface-3/60 border border-edge space-y-1">
+                  <div className="flex justify-between text-[9px] text-fg font-semibold">
                     <span className="flex items-center gap-1"><Sparkles size={9} className="text-purple-soft animate-spin" /> Daily AI Requests</span>
                     <span className="text-purple-soft flex items-center gap-0.5 animate-pulse">112 / 1,000 used</span>
                   </div>
-                  <div className="h-1 w-full bg-zinc-800 rounded-full overflow-hidden">
+                  <div className="h-1 w-full bg-surface-4/60 rounded-full overflow-hidden">
                     <div className="h-full bg-gradient-to-r from-purple via-purple-soft to-orange-400" style={{ width: '11.2%' }} />
                   </div>
                 </div>
 
                 {/* Compact Unified Features list */}
                 <ul className="space-y-2.5 text-xs font-medium pl-0.5">
-                  <li className="flex items-start gap-2.5 text-white">
+                  <li className="flex items-start gap-2.5 text-fg">
                     <CheckCircle2 size={13} className="text-purple-soft mt-0.5 shrink-0" />
                     <span>Up to 100 active startup ideas</span>
                   </li>
-                  <li className="flex items-start gap-2.5 text-white">
+                  <li className="flex items-start gap-2.5 text-fg">
                     <CheckCircle2 size={13} className="text-purple-soft mt-0.5 shrink-0" />
                     <span>1,000 AI requests/day (Priority queue)</span>
                   </li>
-                  <li className="flex items-start gap-2.5 text-white">
+                  <li className="flex items-start gap-2.5 text-fg">
                     <CheckCircle2 size={13} className="text-purple-soft mt-0.5 shrink-0" />
                     <span>AI breakdowns, roadmaps & tasking</span>
                   </li>
-                  <li className="flex items-start gap-2.5 text-white">
+                  <li className="flex items-start gap-2.5 text-fg">
                     <CheckCircle2 size={13} className="text-purple-soft mt-0.5 shrink-0" />
                     <span>Up to 500 uploads (100MB limit per file)</span>
                   </li>
-                  <li className="flex items-start gap-2.5 text-white">
+                  <li className="flex items-start gap-2.5 text-fg">
                     <CheckCircle2 size={13} className="text-purple-soft mt-0.5 shrink-0" />
                     <span>Premium branding, logo & UI boards cloud</span>
                   </li>
-                  <li className="flex items-start gap-2.5 text-white">
+                  <li className="flex items-start gap-2.5 text-fg">
                     <CheckCircle2 size={13} className="text-purple-soft mt-0.5 shrink-0" />
                     <span>Advanced analytics, processing & exports</span>
                   </li>

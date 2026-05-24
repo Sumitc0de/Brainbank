@@ -40,7 +40,7 @@ export default function Header({ onMenuToggle }) {
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search ideas…"
           className="w-full pl-10 pr-3 py-2 text-sm rounded-xl
-            bg-white/70 border border-edge text-fg placeholder:text-fg-4
+            bg-surface-1/70 border border-edge text-fg placeholder:text-fg-4
             focus:border-purple focus:shadow-[0_0_0_3px_rgba(223,32,70,.10)]
             transition-all duration-200"
         />

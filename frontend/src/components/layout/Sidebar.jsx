@@ -143,7 +143,7 @@ function SidebarContent({ activeView, onNav, badge, totalXP, level, xpInLevel, t
                 text-sm font-medium transition-all duration-200 cursor-pointer
                 ${active
                   ? 'bg-gradient-to-r from-purple/12 to-purple-soft/20 text-fg border border-purple/25 shadow-card'
-                  : 'text-fg-2 hover:text-fg hover:bg-white/55 border border-transparent'
+                  : 'text-fg-2 hover:text-fg hover:bg-surface-3/30 border border-transparent'
                 }
               `}
             >
