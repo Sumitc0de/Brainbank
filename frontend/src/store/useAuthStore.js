@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import * as authApi from '../api/authApi';
 
-const useAuthStore = create((set) => ({
+const useAuthStore = create((set, get) => ({
   user: (() => {
     try {
       return JSON.parse(localStorage.getItem('brainbank_user')) || null;
@@ -14,17 +14,53 @@ const useAuthStore = create((set) => ({
   error: null,
   theme: localStorage.getItem('brainbank_theme') || 'light',
 
-  toggleTheme: () => set((state) => {
-    const nextTheme = state.theme === 'light' ? 'dark' : 'light';
-    localStorage.setItem('brainbank_theme', nextTheme);
-    // Directly apply the class to the documentElement for instantaneous feedback
-    if (nextTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
+  toggleTheme: (event) => {
+    const currentTheme = get().theme;
+    const nextTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+    const updateDOM = () => {
+      localStorage.setItem('brainbank_theme', nextTheme);
+      if (nextTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+      set({ theme: nextTheme });
+    };
+
+    if (!document.startViewTransition || !event || typeof event.clientX !== 'number') {
+      updateDOM();
+      return;
     }
-    return { theme: nextTheme };
-  }),
+
+    const x = event.clientX;
+    const y = event.clientY;
+    const endRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y)
+    );
+
+    const transition = document.startViewTransition(() => {
+      updateDOM();
+    });
+
+    transition.ready.then(() => {
+      const clipPath = [
+        `circle(0px at ${x}px ${y}px)`,
+        `circle(${endRadius}px at ${x}px ${y}px)`
+      ];
+      document.documentElement.animate(
+        {
+          clipPath: clipPath,
+        },
+        {
+          duration: 380,
+          easing: 'ease-out',
+          pseudoElement: '::view-transition-new(root)',
+        }
+      );
+    });
+  },
 
   loginWithGoogle: async (googleToken) => {
     set({ loading: true, error: null });
