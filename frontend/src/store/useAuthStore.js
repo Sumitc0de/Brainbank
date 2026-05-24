@@ -12,6 +12,19 @@ const useAuthStore = create((set) => ({
   token: localStorage.getItem('brainbank_token') || null,
   loading: false,
   error: null,
+  theme: localStorage.getItem('brainbank_theme') || 'light',
+
+  toggleTheme: () => set((state) => {
+    const nextTheme = state.theme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('brainbank_theme', nextTheme);
+    // Directly apply the class to the documentElement for instantaneous feedback
+    if (nextTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    return { theme: nextTheme };
+  }),
 
   loginWithGoogle: async (googleToken) => {
     set({ loading: true, error: null });

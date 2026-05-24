@@ -1,28 +1,100 @@
 @import "tailwindcss";
 
 /* ============================================================
-   IdeasHub Design System v3 - Warm Gamified Light Theme
-   Palette: cream, peach, sunset red, honey, sky, and forest.
+   IdeasHub Design System v3 - Premium Gamified Light & Dark Mode
+   Earthy tones, warm golds, sunset reds, volcanic stones.
    ============================================================ */
+
+:root {
+  /* ---- Backgrounds ---- */
+  --surface-0: #fff7df;
+  --surface-1: #fff1d1;
+  --surface-2: #fffaf0;
+  --surface-3: #f7e4bd;
+  --surface-4: #e8d17a;
+
+  /* ---- Borders ---- */
+  --edge: #ead7a8;
+  --edge-light: #d8bd72;
+  --edge-accent: rgba(223, 32, 70, 0.22);
+
+  /* ---- Text ---- */
+  --fg: #213b1f;
+  --fg-2: #526348;
+  --fg-3: #7d7b5f;
+  --fg-4: #a99b75;
+
+  /* ---- Glass ---- */
+  --glass: rgba(255, 255, 255, 0.55);
+  --glass-hover: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(92, 76, 35, 0.12);
+
+  /* ---- Shadows ---- */
+  --shadow-card-val: 0 8px 18px rgba(89, 61, 16, .08), 0 1px 0 rgba(255,255,255,.65) inset;
+  --shadow-elevated-val: 0 18px 38px rgba(89, 61, 16, .15), 0 1px 0 rgba(255,255,255,.7) inset;
+
+  /* ---- Body Gradients & Telemetry ---- */
+  --body-bg-gradient: linear-gradient(135deg, rgba(255, 247, 223, .94), rgba(255, 241, 209, .88));
+  --grid-color-x: rgba(45,111,41,.035);
+  --grid-color-y: rgba(223,32,70,.025);
+  --scrollbar-thumb: #d8bd72;
+  --scrollbar-thumb-hover: #2d6f29;
+}
+
+.dark {
+  /* ---- Backgrounds ---- */
+  --surface-0: #13110f;
+  --surface-1: #1c1917;
+  --surface-2: #24211e;
+  --surface-3: #342f2b;
+  --surface-4: #4a433d;
+
+  /* ---- Borders ---- */
+  --edge: #2e2924;
+  --edge-light: #443e38;
+  --edge-accent: rgba(223, 32, 70, 0.35);
+
+  /* ---- Text ---- */
+  --fg: #f5f5f4;
+  --fg-2: #a8a29e;
+  --fg-3: #78716c;
+  --fg-4: #57534e;
+
+  /* ---- Glass ---- */
+  --glass: rgba(28, 25, 23, 0.65);
+  --glass-hover: rgba(28, 25, 23, 0.85);
+  --glass-border: rgba(234, 215, 168, 0.08);
+
+  /* ---- Shadows ---- */
+  --shadow-card-val: 0 8px 24px rgba(0, 0, 0, .45), 0 1px 0 rgba(255,255,255,.05) inset;
+  --shadow-elevated-val: 0 18px 48px rgba(0, 0, 0, .6), 0 1px 0 rgba(255,255,255,.06) inset;
+
+  /* ---- Body Gradients & Telemetry ---- */
+  --body-bg-gradient: linear-gradient(135deg, rgba(19, 17, 15, .97), rgba(28, 25, 23, .93));
+  --grid-color-x: rgba(234, 215, 168, .015);
+  --grid-color-y: rgba(223, 32, 70, .018);
+  --scrollbar-thumb: #443e38;
+  --scrollbar-thumb-hover: #ff9f33;
+}
 
 @theme {
   /* ---- Backgrounds ---- */
-  --color-surface-0: #fff7df;
-  --color-surface-1: #fff1d1;
-  --color-surface-2: #fffaf0;
-  --color-surface-3: #f7e4bd;
-  --color-surface-4: #e8d17a;
+  --color-surface-0: var(--surface-0);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-surface-4: var(--surface-4);
 
   /* ---- Borders ---- */
-  --color-edge: #ead7a8;
-  --color-edge-light: #d8bd72;
-  --color-edge-accent: rgba(223, 32, 70, 0.22);
+  --color-edge: var(--edge);
+  --color-edge-light: var(--edge-light);
+  --color-edge-accent: var(--edge-accent);
 
   /* ---- Text ---- */
-  --color-fg: #213b1f;
-  --color-fg-2: #526348;
-  --color-fg-3: #7d7b5f;
-  --color-fg-4: #a99b75;
+  --color-fg: var(--fg);
+  --color-fg-2: var(--fg-2);
+  --color-fg-3: var(--fg-3);
+  --color-fg-4: var(--fg-4);
 
   /* ---- Accents ---- */
   --color-purple: #df2046;
@@ -36,13 +108,13 @@
   --color-rose: #ef6b5a;
 
   /* ---- Glass ---- */
-  --color-glass: rgba(255, 255, 255, 0.55);
-  --color-glass-hover: rgba(255, 255, 255, 0.75);
-  --color-glass-border: rgba(92, 76, 35, 0.12);
+  --color-glass: var(--glass);
+  --color-glass-hover: var(--glass-hover);
+  --color-glass-border: var(--glass-border);
 
   /* ---- Shadows ---- */
-  --shadow-card: 0 8px 18px rgba(89, 61, 16, .08), 0 1px 0 rgba(255,255,255,.65) inset;
-  --shadow-elevated: 0 18px 38px rgba(89, 61, 16, .15), 0 1px 0 rgba(255,255,255,.7) inset;
+  --shadow-card: var(--shadow-card-val);
+  --shadow-elevated: var(--shadow-elevated-val);
   --shadow-glow-purple: 0 0 24px rgba(223,32,70,.16);
   --shadow-glow-cyan: 0 0 24px rgba(133,185,223,.18);
 
@@ -94,12 +166,13 @@ html {
 
 body {
   background:
-    linear-gradient(135deg, rgba(255, 247, 223, .94), rgba(255, 241, 209, .88)),
-    repeating-linear-gradient(90deg, rgba(45,111,41,.035) 0 1px, transparent 1px 38px),
-    repeating-linear-gradient(0deg, rgba(223,32,70,.025) 0 1px, transparent 1px 38px);
+    var(--body-bg-gradient),
+    repeating-linear-gradient(90deg, var(--grid-color-x) 0 1px, transparent 1px 38px),
+    repeating-linear-gradient(0deg, var(--grid-color-y) 0 1px, transparent 1px 38px);
   color: var(--color-fg);
   min-height: 100vh;
   overflow: hidden;                  /* root is flex h-screen */
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 #root { min-height: 100vh; }
@@ -107,8 +180,8 @@ body {
 /* ---- Scrollbar ---- */
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #d8bd72; border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: #2d6f29; }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
 
 /* ============================================================
    Utility Classes

@@ -14,7 +14,16 @@ export default function App() {
   const fetchStats = useStatsStore((s) => s.fetchStats);
   const ideas = useIdeaStore((s) => s.ideas);
   const token = useAuthStore((s) => s.token);
+  const theme = useAuthStore((s) => s.theme);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
 
   useEffect(() => {
     if (token) {

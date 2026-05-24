@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, Lightbulb, ListOrdered, FlaskConical, CheckSquare,
-  Trophy, Settings, Crown, X, Zap, Star, LogOut,
+  Trophy, Settings, Crown, X, Zap, Star, LogOut, Sun, Moon,
 } from 'lucide-react';
 import useIdeaStore from '../../store/useIdeaStore';
 import useStatsStore from '../../store/useStatsStore';
@@ -116,7 +116,7 @@ export default function Sidebar({ isOpen, onClose }) {
    Inner content — shared between desktop & mobile panels
    ======================================================== */
 function SidebarContent({ activeView, onNav, badge, totalXP, level, xpInLevel, title }) {
-  const { user, logout } = useAuthStore();
+  const { user, logout, theme, toggleTheme } = useAuthStore();
 
   return (
     <>
@@ -215,15 +215,26 @@ function SidebarContent({ activeView, onNav, badge, totalXP, level, xpInLevel, t
             </div>
           </div>
           
-          <button
-            type="button"
-            onClick={logout}
-            title="Log Out"
-            aria-label="Log Out"
-            className="p-2 rounded-xl text-fg-3 hover:text-red hover:bg-red/10 cursor-pointer transition-all duration-200 shrink-0"
-          >
-            <LogOut size={15} />
-          </button>
+          <div className="flex items-center gap-1 shrink-0">
+            <button
+              type="button"
+              onClick={toggleTheme}
+              title="Toggle Theme"
+              aria-label="Toggle Theme"
+              className="p-2 rounded-xl text-fg-3 hover:text-purple hover:bg-purple/10 cursor-pointer transition-all duration-200"
+            >
+              {theme === 'dark' ? <Sun size={15} className="text-purple-soft" /> : <Moon size={15} />}
+            </button>
+            <button
+              type="button"
+              onClick={logout}
+              title="Log Out"
+              aria-label="Log Out"
+              className="p-2 rounded-xl text-fg-3 hover:text-red hover:bg-red/10 cursor-pointer transition-all duration-200"
+            >
+              <LogOut size={15} />
+            </button>
+          </div>
         </div>
       </div>
     </>
