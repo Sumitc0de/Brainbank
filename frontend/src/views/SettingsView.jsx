@@ -667,6 +667,13 @@ export default function SettingsView() {
               {/* Usage Bars */}
               <div className="space-y-3.5">
                 <UsageBar
+                  icon={LayoutGrid}
+                  label="Active Ideas Captured"
+                  used={ideas.length}
+                  limit={user?.limits?.activeIdeasLimit || 5}
+                  color="purple"
+                />
+                <UsageBar
                   icon={Brain}
                   label="Daily AI Requests"
                   used={user?.credits?.aiRequestsUsed || 0}
@@ -691,8 +698,9 @@ export default function SettingsView() {
               </div>
 
               {/* Mini Analytics Grid */}
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-4 gap-1.5">
                 <MiniStat label="Plan" value={(user?.plan || 'free').toUpperCase()} />
+                <MiniStat label="Ideas Left" value={Math.max(0, (user?.limits?.activeIdeasLimit || 5) - ideas.length)} />
                 <MiniStat label="AI Left" value={Math.max(0, (user?.limits?.aiRequestsLimit || 10) - (user?.credits?.aiRequestsUsed || 0))} />
                 <MiniStat label="Files Left" value={Math.max(0, (user?.limits?.uploadLimit || 5) - (user?.credits?.uploadCountUsed || 0))} />
               </div>

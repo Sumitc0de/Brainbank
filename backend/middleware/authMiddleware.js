@@ -38,6 +38,7 @@ export default async function authMiddleware(req, res, next) {
         });
       }
       req.user = mockUser;
+      req.userId = mockUser._id;
       return next();
     }
 
@@ -89,6 +90,7 @@ export default async function authMiddleware(req, res, next) {
     }
 
     req.user = user;
+    req.userId = user._id;
     next();
   } catch (error) {
     console.error('Auth middleware error:', error);
