@@ -36,7 +36,7 @@ export default function TasksView() {
   if (!ideas.length) return <EmptyState icon={CheckSquare} title="No projects" description="Create an idea first." />;
 
   return (
-    <div className="max-w-3xl space-y-6">
+    <div className="max-w-3xl space-y-6 min-w-0">
       {/* Selector */}
       <div>
         <label className="text-xs font-medium text-fg-3 uppercase tracking-wider mb-2 block">Project</label>
@@ -105,24 +105,24 @@ export default function TasksView() {
       })}
 
       {/* Add form */}
-      <div className="p-5 rounded-xl bg-surface-2/40 border border-edge space-y-3">
+      <div className="p-4 sm:p-5 rounded-xl bg-surface-2/40 border border-edge space-y-3">
         <h4 className="text-xs font-medium text-fg-3 uppercase tracking-wider">Add Task</h4>
         <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })}
           onKeyDown={(e) => e.key === 'Enter' && add()} placeholder="Task title…"
-          className="w-full text-sm bg-surface-2 border border-edge rounded-xl p-3.5
+          className="w-full min-w-0 text-sm bg-surface-2 border border-edge rounded-xl p-3 sm:p-3.5
             text-fg placeholder:text-fg-4 focus:border-purple focus:shadow-[0_0_0_3px_rgba(139,92,246,.10)]" />
-        <div className="flex gap-2 flex-wrap">
+        <div className="grid grid-cols-2 sm:flex gap-2 sm:flex-wrap">
           <select value={form.phase} onChange={(e) => setForm({ ...form, phase: e.target.value })}
-            className="text-xs bg-surface-2 border border-edge rounded-lg px-3 py-2 text-fg-3">
+            className="text-xs bg-surface-2 border border-edge rounded-lg px-3 py-2 text-fg-3 min-w-0">
             {PHASES.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
           </select>
           <select value={form.priority} onChange={(e) => setForm({ ...form, priority: e.target.value })}
-            className="text-xs bg-surface-2 border border-edge rounded-lg px-3 py-2 text-fg-3">
+            className="text-xs bg-surface-2 border border-edge rounded-lg px-3 py-2 text-fg-3 min-w-0">
             {['high','medium','low'].map((p) => <option key={p} value={p}>{p[0].toUpperCase()+p.slice(1)}</option>)}
           </select>
           <input value={form.estimatedTime} onChange={(e) => setForm({ ...form, estimatedTime: e.target.value })}
-            placeholder="Est. time" className="text-xs bg-surface-2 border border-edge rounded-lg px-3 py-2 text-fg-3 w-28" />
-          <Button onClick={add} icon={Plus} size="sm">Add</Button>
+            placeholder="Est. time" className="text-xs bg-surface-2 border border-edge rounded-lg px-3 py-2 text-fg-3 min-w-0" />
+          <Button onClick={add} icon={Plus} size="sm" className="col-span-2 sm:col-span-1">Add</Button>
         </div>
       </div>
     </div>

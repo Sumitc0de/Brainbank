@@ -30,7 +30,7 @@ export default function ResearchView() {
   if (!ideas.length) return <EmptyState icon={FlaskConical} title="No projects" description="Create an idea first." />;
 
   return (
-    <div className="max-w-3xl space-y-6">
+    <div className="max-w-3xl space-y-6 min-w-0">
       {/* Selector */}
       <div>
         <label className="text-xs font-medium text-fg-3 uppercase tracking-wider mb-2 block">Project</label>
@@ -83,13 +83,13 @@ export default function ResearchView() {
       </div>
 
       {/* Add */}
-      <div className="flex gap-3">
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
         <input value={title} onChange={(e) => setTitle(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && add()}
           placeholder="Add research item…"
-          className="flex-1 text-sm bg-surface-2 border border-edge rounded-xl p-3.5
+          className="flex-1 min-w-0 text-sm bg-surface-2 border border-edge rounded-xl p-3 sm:p-3.5
             text-fg placeholder:text-fg-4 focus:border-cyan focus:shadow-[0_0_0_3px_rgba(34,211,238,.10)]" />
-        <Button onClick={add} variant="cyan" icon={Plus}>Add</Button>
+        <Button onClick={add} variant="cyan" icon={Plus} className="shrink-0 self-end sm:self-auto">Add</Button>
       </div>
     </div>
   );

@@ -301,7 +301,7 @@ export default function SettingsView() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 min-w-0">
       {/* Workspace Quick Counts */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {counts.map((item) => (
@@ -698,7 +698,7 @@ export default function SettingsView() {
               </div>
 
               {/* Mini Analytics Grid */}
-              <div className="grid grid-cols-4 gap-1.5">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
                 <MiniStat label="Plan" value={(user?.plan || 'free').toUpperCase()} />
                 <MiniStat label="Ideas Left" value={Math.max(0, (user?.limits?.activeIdeasLimit || 5) - ideas.length)} />
                 <MiniStat label="AI Left" value={Math.max(0, (user?.limits?.aiRequestsLimit || 10) - (user?.credits?.aiRequestsUsed || 0))} />
