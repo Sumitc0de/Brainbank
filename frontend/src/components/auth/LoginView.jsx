@@ -216,14 +216,14 @@ export default function LoginView() {
 
       {/* ================= HEADER NAVBAR ================= */}
       <header className="sticky top-0 z-50 w-full border-b border-edge/60 bg-surface-2/80 backdrop-blur-md">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
             <img
               src={theme === 'dark' ? '/logo.png' : '/logo1.png'}
               alt="Brainbank Logo"
-              className="w-8.5 h-8.5 object-contain rounded-lg shadow-sm"
+              className="w-8 h-8 sm:w-8.5 sm:h-8.5 object-contain rounded-lg shadow-sm shrink-0"
             />
-            <span className="text-sm font-black tracking-tight bg-gradient-to-r from-fg to-fg-2 bg-clip-text text-transparent">Brainbank</span>
+            <span className="text-xs sm:text-sm font-black tracking-tight bg-gradient-to-r from-fg to-fg-2 bg-clip-text text-transparent hidden min-[400px]:inline-block shrink-0">Brainbank</span>
           </div>
 
           <nav className="hidden sm:flex items-center gap-8 text-xs font-semibold text-fg-2">
@@ -233,23 +233,23 @@ export default function LoginView() {
             <a href="#reviews" className="hover:text-purple transition-colors">Reviews</a>
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <button
               type="button"
               onClick={toggleTheme}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-edge/60 bg-surface-2/45 hover:bg-surface-2 hover:border-edge text-fg transition-all cursor-pointer"
+              className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg border border-edge/60 bg-surface-2/45 hover:bg-surface-2 hover:border-edge text-fg transition-all cursor-pointer shrink-0"
               title="Toggle Theme"
             >
-              {theme === 'dark' ? <Sun size={15} className="text-purple-soft" /> : <Moon size={15} className="text-fg-2" />}
+              {theme === 'dark' ? <Sun size={14} className="text-purple-soft" /> : <Moon size={14} className="text-fg-2" />}
             </button>
 
             <button 
               type="button"
               onClick={scrollToAuth}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-fg hover:bg-fg-2 text-surface-2 font-bold text-xs shadow-md transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg bg-fg hover:bg-fg-2 text-surface-2 font-bold text-[10px] sm:text-xs shadow-md transition-colors cursor-pointer shrink-0"
             >
-              <LogIn size={12} />
-              Start Building
+              <LogIn size={11} />
+              <span>Start Building</span>
             </button>
           </div>
         </div>
@@ -281,11 +281,11 @@ export default function LoginView() {
               Capture ideas, organize research, upload assets, generate PRDs, and track execution — all in one intelligent, gamified-themed workspace. Built exclusively for serious builders.
             </p>
 
-            <div className="flex items-center gap-3 pt-2">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
               <button 
                 type="button"
                 onClick={scrollToAuth}
-                className="flex items-center gap-1.5 px-6 py-3.5 rounded-xl bg-gradient-to-r from-purple to-purple-soft text-white hover:from-purple-deep hover:to-purple font-bold text-sm shadow-lg shadow-purple/15 transition-all active:scale-[0.98] cursor-pointer"
+                className="flex items-center justify-center gap-1.5 px-6 py-3.5 rounded-xl bg-gradient-to-r from-purple to-purple-soft text-white hover:from-purple-deep hover:to-purple font-bold text-sm shadow-lg shadow-purple/15 transition-all active:scale-[0.98] cursor-pointer w-full sm:w-auto"
               >
                 Start Building Free
                 <ChevronRight size={16} />
@@ -293,7 +293,7 @@ export default function LoginView() {
               <button 
                 type="button"
                 onClick={scrollToAuth}
-                className="px-6 py-3.5 rounded-xl border border-edge bg-surface-2/60 hover:bg-surface-2 text-fg font-bold text-sm transition-all shadow-card cursor-pointer"
+                className="px-6 py-3.5 rounded-xl border border-edge bg-surface-2/60 hover:bg-surface-2 text-fg font-bold text-sm transition-all shadow-card cursor-pointer w-full sm:w-auto text-center"
               >
                 Watch Demo
               </button>
