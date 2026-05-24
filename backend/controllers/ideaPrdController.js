@@ -1,4 +1,5 @@
 import Idea from '../models/Idea.js';
+import User from '../models/User.js';
 import {
   buildPrdSectionValue,
   generateIdeaPrd,
@@ -32,6 +33,13 @@ export async function generatePrdForIdea(req, res) {
     }
     idea.lastActiveAt = new Date();
     await idea.save();
+
+    // Increment user AI quota counter
+    const user = await User.findById(req.userId);
+    if (user) {
+      user.credits.aiRequestsUsed = (user.credits.aiRequestsUsed || 0) + 1;
+      await user.save();
+    }
 
     res.json({ success: true, data: idea });
   } catch (err) {
@@ -91,6 +99,13 @@ export async function regeneratePRDSection(req, res) {
     idea.lastActiveAt = new Date();
     idea.xp = (idea.xp || 0) + 5;
     await idea.save();
+
+    // Increment user AI quota counter on regeneration
+    const user = await User.findById(req.userId);
+    if (user) {
+      user.credits.aiRequestsUsed = (user.credits.aiRequestsUsed || 0) + 1;
+      await user.save();
+    }
 
     res.json({ success: true, data: idea });
   } catch (err) {

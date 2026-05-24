@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { getPlanConfig } from '../config/plans.config.js';
 
 const userSchema = new mongoose.Schema(
   {
@@ -24,18 +25,42 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
-    // Role-based access preparation
     role: {
       type: String,
       enum: ['user', 'admin', 'premium'],
       default: 'user',
     },
-    // Token version — increment to invalidate all issued tokens for this user
+    // SaaS Plan & Quotas
+    plan: {
+      type: String,
+      enum: ['free', 'pro', 'ultra'],
+      default: 'free',
+      index: true,
+    },
+    credits: {
+      aiRequestsUsed: { type: Number, default: 0 },
+      uploadCountUsed: { type: Number, default: 0 },
+      uploadStorageUsed: { type: Number, default: 0 }, // in bytes
+    },
+    limits: {
+      aiRequestsLimit: { type: Number, default: 10 },
+      uploadLimit: { type: Number, default: 5 },
+      storageLimitMB: { type: Number, default: 5 },
+      activeIdeasLimit: { type: Number, default: 5 },
+    },
+    subscription: {
+      status: { type: String, default: 'active' },
+      startedAt: { type: Date, default: Date.now },
+      expiresAt: { type: Date, default: null },
+    },
+    aiResetDate: {
+      type: Date,
+      default: Date.now,
+    },
     tokenVersion: {
       type: Number,
       default: 0,
     },
-    // Hash of the current valid refresh token (for server-side validation)
     refreshTokenHash: {
       type: String,
       default: null,
@@ -49,6 +74,20 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+// Pre-save hook: Sync limits block automatically when plan changes
+userSchema.pre('save', function (next) {
+  if (this.isModified('plan') || this.isNew) {
+    const config = getPlanConfig(this.plan);
+    this.limits = {
+      aiRequestsLimit: config.aiRequestsLimit,
+      uploadLimit: config.uploadCountLimit,
+      storageLimitMB: config.storageLimitMB,
+      activeIdeasLimit: config.activeIdeasLimit,
+    };
+  }
+  next();
+});
 
 const User = mongoose.model('User', userSchema);
 export default User;

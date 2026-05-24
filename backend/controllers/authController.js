@@ -47,6 +47,21 @@ function hashToken(token) {
   return crypto.createHash('sha256').update(token).digest('hex');
 }
 
+// Helper to sanitize user object for client response
+function formatUserPayload(user) {
+  return {
+    id: user._id,
+    email: user.email,
+    name: user.name,
+    picture: user.picture,
+    role: user.role,
+    plan: user.plan,
+    credits: user.credits || { aiRequestsUsed: 0, uploadCountUsed: 0, uploadStorageUsed: 0 },
+    limits: user.limits || { aiRequestsLimit: 10, uploadLimit: 5, storageLimitMB: 5, activeIdeasLimit: 5 },
+    subscription: user.subscription || { status: 'active', startedAt: new Date(), expiresAt: null },
+  };
+}
+
 // ── Set auth cookies on response ────────────────────────────
 async function setAuthCookies(res, user) {
   const accessToken = generateAccessToken(user._id, user.tokenVersion);
@@ -118,13 +133,13 @@ export async function googleLogin(req, res) {
         name,
         picture,
         role: 'user',
+        plan: 'free',
       });
     } else {
       user.googleId = googleId;
       user.name = name || user.name;
       user.picture = picture || user.picture;
       user.lastLoginAt = new Date();
-      // Don't save yet — setAuthCookies will save after setting refreshTokenHash
     }
 
     await migrateUnownedIdeas(user._id);
@@ -138,13 +153,7 @@ export async function googleLogin(req, res) {
 
     res.json({
       success: true,
-      user: {
-        id: user._id,
-        email: user.email,
-        name: user.name,
-        picture: user.picture,
-        role: user.role,
-      },
+      user: formatUserPayload(user),
     });
   } catch (err) {
     console.error('Google Auth verification error:', err);
@@ -169,6 +178,7 @@ export async function mockLogin(req, res) {
         picture: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80',
         googleId: 'mock-dev-id',
         role: 'user',
+        plan: 'free',
       });
     } else {
       mockUser.lastLoginAt = new Date();
@@ -185,13 +195,7 @@ export async function mockLogin(req, res) {
 
     res.json({
       success: true,
-      user: {
-        id: mockUser._id,
-        email: mockUser.email,
-        name: mockUser.name,
-        picture: mockUser.picture,
-        role: mockUser.role,
-      },
+      user: formatUserPayload(mockUser),
     });
   } catch (err) {
     console.error('Mock Auth login error:', err);
@@ -213,7 +217,6 @@ export async function refreshToken(req, res) {
     try {
       decoded = jwt.verify(token, JWT_REFRESH_SECRET);
     } catch (err) {
-      // Clear stale cookies
       res.clearCookie('access_token', accessCookieOpts());
       res.clearCookie('refresh_token', refreshCookieOpts());
       const code = err.name === 'TokenExpiredError' ? 'REFRESH_TOKEN_EXPIRED' : 'INVALID_REFRESH_TOKEN';
@@ -229,21 +232,18 @@ export async function refreshToken(req, res) {
       return res.status(401).json({ success: false, error: 'User not found.', code: 'USER_NOT_FOUND' });
     }
 
-    // Verify token version (allows mass invalidation)
     if (decoded.v !== user.tokenVersion) {
       res.clearCookie('access_token', accessCookieOpts());
       res.clearCookie('refresh_token', refreshCookieOpts());
       return res.status(401).json({ success: false, error: 'Session invalidated.', code: 'TOKEN_VERSION_MISMATCH' });
     }
 
-    // Verify refresh token hash (ensures this specific token is still valid)
     if (user.refreshTokenHash !== hashToken(token)) {
       res.clearCookie('access_token', accessCookieOpts());
       res.clearCookie('refresh_token', refreshCookieOpts());
       return res.status(401).json({ success: false, error: 'Refresh token revoked.', code: 'TOKEN_REVOKED' });
     }
 
-    // Issue new token pair (rotation)
     await setAuthCookies(res, user);
 
     logAuthEvent('TOKEN_REFRESH', {
@@ -254,13 +254,7 @@ export async function refreshToken(req, res) {
 
     res.json({
       success: true,
-      user: {
-        id: user._id,
-        email: user.email,
-        name: user.name,
-        picture: user.picture,
-        role: user.role,
-      },
+      user: formatUserPayload(user),
     });
   } catch (err) {
     console.error('Token refresh error:', err);
@@ -273,7 +267,6 @@ export async function refreshToken(req, res) {
 // ═════════════════════════════════════════════════════════════
 export async function logout(req, res) {
   try {
-    // Invalidate refresh token server-side
     const token = req.cookies?.refresh_token;
     if (token) {
       try {
@@ -290,7 +283,7 @@ export async function logout(req, res) {
           });
         }
       } catch {
-        // Token already invalid — just clear cookies
+        // Token already invalid
       }
     }
 
@@ -320,7 +313,7 @@ export async function getMe(req, res) {
       return res.status(401).json({ success: false, error: 'Invalid session.' });
     }
 
-    const user = await User.findById(decoded.userId).select('-refreshTokenHash');
+    const user = await User.findById(decoded.userId);
     if (!user) {
       return res.status(401).json({ success: false, error: 'User not found.' });
     }
@@ -331,16 +324,49 @@ export async function getMe(req, res) {
 
     res.json({
       success: true,
-      user: {
-        id: user._id,
-        email: user.email,
-        name: user.name,
-        picture: user.picture,
-        role: user.role,
-      },
+      user: formatUserPayload(user),
     });
   } catch (err) {
     console.error('GetMe error:', err);
     res.status(500).json({ success: false, error: 'Failed to get user.' });
+  }
+}
+
+// ═════════════════════════════════════════════════════════════
+//  DEVELOPER SWITCH PLAN (development only)
+// ═════════════════════════════════════════════════════════════
+export async function devSetPlan(req, res) {
+  if (!isDevelopment()) {
+    return res.status(404).json({ success: false, error: 'Not found.' });
+  }
+
+  try {
+    const { plan } = req.body;
+    if (!['free', 'pro', 'ultra'].includes(plan)) {
+      return res.status(400).json({ success: false, error: 'Invalid plan name.' });
+    }
+
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'User not found.' });
+    }
+
+    user.plan = plan;
+    // pre-save hook updates limits dynamically
+    await user.save();
+
+    logAuthEvent('DEV_SET_PLAN', {
+      email: user.email,
+      plan: plan,
+      ip: req.ip,
+    });
+
+    res.json({
+      success: true,
+      user: formatUserPayload(user),
+    });
+  } catch (err) {
+    console.error('Dev set plan failed:', err);
+    res.status(500).json({ success: false, error: 'Failed to set developer plan.' });
   }
 }

@@ -47,3 +47,19 @@ export const uploadLimiter = rateLimit({
     code: 'RATE_LIMIT_UPLOAD',
   },
 });
+
+/**
+ * Stricter rate limiter specifically for AI PRD Generation endpoints.
+ * Max 20 requests per minute per IP.
+ */
+export const aiLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute window
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    error: 'Too many AI requests. Please wait a minute before generating more specs.',
+    code: 'RATE_LIMIT_AI',
+  },
+});

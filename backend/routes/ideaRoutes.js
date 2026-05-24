@@ -14,7 +14,7 @@ import {
   regeneratePRDSection,
   updatePRDSection,
 } from '../controllers/ideaPrdController.js';
-import { apiLimiter } from '../middleware/rateLimiter.js';
+import { apiLimiter, aiLimiter } from '../middleware/rateLimiter.js';
 import {
   validate,
   createIdeaSchema,
@@ -23,6 +23,7 @@ import {
   updatePrdSectionSchema,
   regeneratePrdSectionSchema,
 } from '../middleware/validate.js';
+import { checkActiveIdeasLimit, checkAiLimit } from '../middleware/gatingMiddleware.js';
 
 const router = Router();
 
@@ -36,16 +37,16 @@ router.get('/stats', getStats);
 router.get('/stale', getStaleIdeas);
 
 // CRUD
-router.post('/', validate(createIdeaSchema), createIdea);
+router.post('/', checkActiveIdeasLimit, validate(createIdeaSchema), createIdea);
 router.get('/', getAllIdeas);
 router.get('/:id', getIdeaById);
 router.put('/:id', validate(updateIdeaSchema), updateIdea);
 router.delete('/:id', deleteIdea);
 
-// PRD
-router.post('/:id/generate-prd', generatePrdForIdea);
+// PRD (protected by special aiLimiter + checkAiLimit daily quotas)
+router.post('/:id/generate-prd', aiLimiter, checkAiLimit, generatePrdForIdea);
 router.patch('/:id/prd', validate(updatePrdSectionSchema), updatePRDSection);
-router.post('/:id/regenerate', validate(regeneratePrdSectionSchema), regeneratePRDSection);
+router.post('/:id/regenerate', aiLimiter, checkAiLimit, validate(regeneratePrdSectionSchema), regeneratePRDSection);
 
 // Status (drag & drop)
 router.patch('/status', validate(updateStatusSchema), updateIdeaStatus);

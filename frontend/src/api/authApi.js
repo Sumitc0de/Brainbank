@@ -30,4 +30,7 @@ export const getCurrentUser = () =>
 export const logoutFromServer = () =>
   authApi.post('/logout').then((res) => res.data);
 
+export const devSetPlan = (plan) =>
+  authApi.post('/dev-set-plan', { plan }).then((res) => res.data);
+
 export default authApi;

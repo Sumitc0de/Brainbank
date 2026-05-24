@@ -172,6 +172,22 @@ const useAuthStore = create((set, get) => ({
   },
 
   // ═══════════════════════════════════════════════════════════
+  //  DEV SET PLAN — switch subscription tier (dev only)
+  // ═══════════════════════════════════════════════════════════
+  devSetPlan: async (plan) => {
+    try {
+      const res = await authApi.devSetPlan(plan);
+      const user = res.user;
+      localStorage.setItem('brainbank_user', JSON.stringify(user));
+      set({ user });
+      return user;
+    } catch (err) {
+      const errMsg = err.response?.data?.error || err.message || 'Failed to switch plan.';
+      throw new Error(errMsg);
+    }
+  },
+
+  // ═══════════════════════════════════════════════════════════
   //  LOGOUT — clears server cookies + local state
   // ═══════════════════════════════════════════════════════════
   logout: async () => {

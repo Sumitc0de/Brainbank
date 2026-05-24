@@ -2,7 +2,8 @@ import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   Check, Download, Info, Palette, RefreshCw, Sun, Moon,
-  ShieldCheck, Sparkles, User, LogOut, Sliders, Bell, LayoutGrid, Zap, Star
+  ShieldCheck, Sparkles, User, LogOut, Sliders, Bell, LayoutGrid, Zap, Star,
+  Crown, Database, Brain, Cpu, ArrowUpRight, Shield
 } from 'lucide-react';
 import Button from '../components/ui/Button';
 import useIdeaStore from '../store/useIdeaStore';
@@ -103,6 +104,7 @@ export default function SettingsView() {
   const stats = useStatsStore((s) => s.stats);
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
+  const devSetPlan = useAuthStore((s) => s.devSetPlan);
   const theme = useAuthStore((s) => s.theme);
   const toggleTheme = useAuthStore((s) => s.toggleTheme);
   const themeStyle = useAuthStore((s) => s.themeStyle);
@@ -113,6 +115,7 @@ export default function SettingsView() {
   const setReduceAnimations = useAuthStore((s) => s.setReduceAnimations);
   const compactMode = useAuthStore((s) => s.compactMode);
   const setCompactMode = useAuthStore((s) => s.setCompactMode);
+  const [planSwitching, setPlanSwitching] = useState(null);
 
   // Notifications State
   const [notifs, setNotifs] = useState(() => {
@@ -507,9 +510,7 @@ export default function SettingsView() {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5">
                     <h4 className="text-sm font-black text-fg truncate">{user?.name || 'Founder'}</h4>
-                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple/10 border border-purple/20 text-purple uppercase tracking-wider shrink-0">
-                      Pro Founder
-                    </span>
+                    <PlanBadge plan={user?.plan} />
                   </div>
                   <p className="text-xs text-fg-3 truncate mt-0.5">{user?.email || 'builder@founderos.local'}</p>
                 </div>
@@ -630,7 +631,125 @@ export default function SettingsView() {
             </div>
           </motion.section>
 
-          {/* Section 6: About Brainbank */}
+          {/* Section 6: Plan & Credits Dashboard */}
+          <motion.section
+            {...cardMotion}
+            transition={{ delay: 0.26 }}
+            className="rounded-2xl bg-surface-2/65 border border-edge backdrop-blur-xl shadow-card overflow-hidden"
+          >
+            <SectionHeader icon={Crown} title="Plan & Credits" subtitle="Active subscription usage, daily AI credits, upload capacity, and storage analytics." />
+            
+            <div className="p-6 space-y-5">
+              {/* Active Plan Banner */}
+              <div className="flex items-center justify-between rounded-xl border border-edge bg-surface-0/60 p-4">
+                <div className="flex items-center gap-3">
+                  <div className={`flex h-10 w-10 items-center justify-center rounded-xl shadow-card ${
+                    user?.plan === 'ultra' ? 'bg-gradient-to-br from-amber to-orange-500 text-white' :
+                    user?.plan === 'pro' ? 'bg-gradient-to-br from-purple to-pink-500 text-white' :
+                    'bg-surface-3 text-fg-3'
+                  }`}>
+                    <Crown size={18} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-black text-fg capitalize">{user?.plan || 'free'} Plan</p>
+                    <p className="text-[10px] text-fg-3">
+                      {user?.plan === 'ultra' ? 'Ultra / Startup' : user?.plan === 'pro' ? 'Founder / Pro' : 'Hobbyist'}
+                    </p>
+                  </div>
+                </div>
+                {user?.plan !== 'ultra' && (
+                  <button className="inline-flex items-center gap-1 text-[10px] font-bold text-purple hover:text-purple-deep transition-colors cursor-pointer">
+                    <ArrowUpRight size={12} /> Upgrade
+                  </button>
+                )}
+              </div>
+
+              {/* Usage Bars */}
+              <div className="space-y-3.5">
+                <UsageBar
+                  icon={Brain}
+                  label="Daily AI Requests"
+                  used={user?.credits?.aiRequestsUsed || 0}
+                  limit={user?.limits?.aiRequestsLimit || 10}
+                  color="purple"
+                />
+                <UsageBar
+                  icon={Database}
+                  label="Upload Assets"
+                  used={user?.credits?.uploadCountUsed || 0}
+                  limit={user?.limits?.uploadLimit || 5}
+                  color="cyan"
+                />
+                <UsageBar
+                  icon={Cpu}
+                  label="Cloud Storage"
+                  used={Math.round(((user?.credits?.uploadStorageUsed || 0) / (1024 * 1024)) * 100) / 100}
+                  limit={user?.limits?.storageLimitMB || 5}
+                  unit="MB"
+                  color="amber"
+                />
+              </div>
+
+              {/* Mini Analytics Grid */}
+              <div className="grid grid-cols-3 gap-2">
+                <MiniStat label="Plan" value={(user?.plan || 'free').toUpperCase()} />
+                <MiniStat label="AI Left" value={Math.max(0, (user?.limits?.aiRequestsLimit || 10) - (user?.credits?.aiRequestsUsed || 0))} />
+                <MiniStat label="Files Left" value={Math.max(0, (user?.limits?.uploadLimit || 5) - (user?.credits?.uploadCountUsed || 0))} />
+              </div>
+            </div>
+          </motion.section>
+
+          {/* Section 7: Developer Gating Dashboard (dev only) */}
+          {import.meta.env.DEV && (
+            <motion.section
+              {...cardMotion}
+              transition={{ delay: 0.30 }}
+              className="rounded-2xl bg-surface-2/65 border border-edge backdrop-blur-xl shadow-card overflow-hidden border-l-4 border-l-amber"
+            >
+              <SectionHeader icon={Shield} title="Developer Testing" subtitle="Switch plans instantly to test gating, quotas, and limit enforcement." />
+              
+              <div className="p-6 space-y-4">
+                <p className="text-[10px] text-fg-4 bg-amber/10 border border-amber/20 rounded-lg p-2.5 leading-relaxed">
+                  ⚠️ <strong>Dev Mode Only</strong> — These controls bypass Stripe and directly mutate the database plan state for testing. They are hidden in production builds.
+                </p>
+                <div className="grid grid-cols-3 gap-2">
+                  {['free', 'pro', 'ultra'].map((plan) => {
+                    const isActive = user?.plan === plan;
+                    const isSwitching = planSwitching === plan;
+                    return (
+                      <button
+                        key={plan}
+                        type="button"
+                        disabled={isSwitching}
+                        onClick={async () => {
+                          setPlanSwitching(plan);
+                          try {
+                            await devSetPlan(plan);
+                            toast(`Switched to ${plan.toUpperCase()} plan`, 'success');
+                          } catch (err) {
+                            toast(err.message, 'error');
+                          }
+                          setPlanSwitching(null);
+                        }}
+                        className={`flex flex-col items-center gap-1.5 rounded-xl border p-3 transition-all cursor-pointer ${
+                          isActive
+                            ? 'border-purple bg-purple/10 ring-1 ring-purple/20 shadow-glow-purple'
+                            : 'border-edge bg-surface-0/70 hover:border-purple/35 hover:bg-surface-3/50'
+                        } ${isSwitching ? 'opacity-50 pointer-events-none' : ''}`}
+                      >
+                        <Crown size={16} className={isActive ? 'text-purple' : 'text-fg-3'} />
+                        <span className="text-xs font-bold text-fg uppercase">{plan}</span>
+                        {isActive && <span className="text-[8px] text-purple font-bold">ACTIVE</span>}
+                        {isSwitching && <span className="text-[8px] text-fg-4">switching...</span>}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </motion.section>
+          )}
+
+          {/* Section 8: About Brainbank */}
           <motion.section
             {...cardMotion}
             transition={{ delay: 0.26 }}
@@ -724,3 +843,64 @@ function Slider({ value, min = 0, max = 100, onChange, label, desc }) {
     </div>
   );
 }
+
+function PlanBadge({ plan }) {
+  const config = {
+    ultra: { label: 'Ultra', bg: 'bg-gradient-to-r from-amber/15 to-orange-500/15', border: 'border-amber/30', text: 'text-amber' },
+    pro: { label: 'Pro', bg: 'bg-purple/10', border: 'border-purple/20', text: 'text-purple' },
+    free: { label: 'Free', bg: 'bg-surface-3/60', border: 'border-edge', text: 'text-fg-3' },
+  };
+  const c = config[plan] || config.free;
+  return (
+    <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${c.bg} border ${c.border} ${c.text} uppercase tracking-wider shrink-0`}>
+      {c.label}
+    </span>
+  );
+}
+
+function UsageBar({ icon: Icon, label, used, limit, color = 'purple', unit = '' }) {
+  const pct = limit > 0 ? Math.min(100, (used / limit) * 100) : 0;
+  const isWarning = pct >= 80;
+  const isFull = pct >= 100;
+
+  const barColors = {
+    purple: isFull ? 'bg-red' : isWarning ? 'bg-amber' : 'bg-purple',
+    cyan: isFull ? 'bg-red' : isWarning ? 'bg-amber' : 'bg-cyan-500',
+    amber: isFull ? 'bg-red' : isWarning ? 'bg-amber' : 'bg-amber',
+  };
+
+  return (
+    <div className="space-y-1.5">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1.5">
+          <Icon size={12} className="text-fg-3" />
+          <span className="text-[11px] font-bold text-fg">{label}</span>
+        </div>
+        <span className={`text-[10px] font-mono font-bold tabular-nums ${isFull ? 'text-red' : isWarning ? 'text-amber' : 'text-fg-3'}`}>
+          {used}{unit} / {limit}{unit}
+        </span>
+      </div>
+      <div className="w-full bg-surface-3 h-1.5 rounded-full overflow-hidden">
+        <motion.div
+          className={`h-full rounded-full ${barColors[color] || barColors.purple}`}
+          initial={{ width: 0 }}
+          animate={{ width: `${pct}%` }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+        />
+      </div>
+      {isFull && (
+        <p className="text-[9px] text-red font-semibold">Limit reached — upgrade plan to continue</p>
+      )}
+    </div>
+  );
+}
+
+function MiniStat({ label, value }) {
+  return (
+    <div className="bg-surface-0/60 rounded-lg border border-edge/40 p-2.5 text-center">
+      <p className="text-lg font-black text-fg tabular-nums leading-none">{value}</p>
+      <p className="text-[9px] text-fg-4 mt-1 font-bold uppercase tracking-wider">{label}</p>
+    </div>
+  );
+}
+

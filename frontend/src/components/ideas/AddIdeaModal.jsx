@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { X, Plus, Sparkles, Check } from 'lucide-react';
+import { X, Plus, Sparkles, Check, Crown, AlertTriangle } from 'lucide-react';
 import Modal from '../ui/Modal';
 import Button from '../ui/Button';
 import ScoreSlider from '../ui/ScoreSlider';
 import useIdeaStore from '../../store/useIdeaStore';
+import useAuthStore from '../../store/useAuthStore';
 import { toast } from '../ui/Toast';
 
 const PRODUCT_TYPES = [
@@ -63,9 +64,16 @@ const INITIAL = {
 };
 
 export default function AddIdeaModal() {
-  const { isAddModalOpen, setAddModalOpen, createIdea } = useIdeaStore();
+  const { isAddModalOpen, setAddModalOpen, createIdea, ideas } = useIdeaStore();
+  const user = useAuthStore((s) => s.user);
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({ ...INITIAL, details: { ...INITIAL.details } });
+
+  // Plan quota check
+  const activeIdeasCount = ideas?.length || 0;
+  const activeIdeasLimit = user?.limits?.activeIdeasLimit || 5;
+  const isAtLimit = activeIdeasCount >= activeIdeasLimit;
+  const isNearLimit = activeIdeasCount >= activeIdeasLimit - 1 && !isAtLimit;
 
   const reset = () => setForm({ ...INITIAL, details: { ...INITIAL.details } });
 
@@ -124,6 +132,26 @@ export default function AddIdeaModal() {
   return (
     <Modal isOpen={isAddModalOpen} onClose={() => { setAddModalOpen(false); reset(); }}
       title="✨ New Quest Idea" maxWidth="max-w-3xl">
+
+      {/* Plan limit warning */}
+      {isAtLimit && (
+        <div className="flex items-center gap-3 mb-4 p-3.5 rounded-xl bg-red/10 border border-red/20">
+          <Crown size={18} className="text-red shrink-0" />
+          <div>
+            <p className="text-xs font-bold text-red">Idea limit reached ({activeIdeasCount}/{activeIdeasLimit})</p>
+            <p className="text-[10px] text-fg-3 mt-0.5">Upgrade your plan to capture more startup ideas.</p>
+          </div>
+        </div>
+      )}
+      {isNearLimit && !isAtLimit && (
+        <div className="flex items-center gap-3 mb-4 p-3 rounded-xl bg-amber/10 border border-amber/20">
+          <AlertTriangle size={16} className="text-amber shrink-0" />
+          <p className="text-[10px] text-fg-2">
+            <strong>Almost at limit</strong> — {activeIdeasCount}/{activeIdeasLimit} ideas used. You have 1 idea slot remaining.
+          </p>
+        </div>
+      )}
+
       <form onSubmit={submit} className="space-y-5">
         <div>
           <label className="text-[11px] font-bold text-fg-3 uppercase tracking-widest mb-2 block">
@@ -298,8 +326,8 @@ export default function AddIdeaModal() {
           </div>
         </div>
 
-        <Button type="submit" disabled={submitting} className="w-full" size="lg" icon={Sparkles}>
-          {submitting ? 'Crafting...' : 'Create Quest 🚀'}
+        <Button type="submit" disabled={submitting || isAtLimit} className="w-full" size="lg" icon={isAtLimit ? Crown : Sparkles}>
+          {isAtLimit ? `Upgrade Plan to Create (${activeIdeasCount}/${activeIdeasLimit})` : submitting ? 'Crafting...' : 'Create Quest 🚀'}
         </Button>
       </form>
     </Modal>

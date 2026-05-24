@@ -1,4 +1,5 @@
 import Idea from '../models/Idea.js';
+import User from '../models/User.js';
 import cloudinary, { assertCloudinaryConfig } from '../config/cloudinary.js';
 
 function getUploadUrl(file) {
@@ -43,6 +44,14 @@ async function attachToIdea({ ideaId, file, type, userId, res }) {
   idea.xp = (idea.xp || 0) + 3;
   await idea.save();
 
+  // Increment user uploads quota counters
+  const user = await User.findById(userId);
+  if (user) {
+    user.credits.uploadCountUsed = (user.credits.uploadCountUsed || 0) + 1;
+    user.credits.uploadStorageUsed = (user.credits.uploadStorageUsed || 0) + (attachment.size || 0);
+    await user.save();
+  }
+
   return res.status(201).json({
     success: true,
     data: idea,
@@ -81,6 +90,7 @@ export async function deleteUpload(req, res) {
     }
 
     const attachment = idea.attachments.find((item) => item.public_id === publicId);
+    const size = attachment?.size || 0;
     const resourceType = attachment.url?.includes('/raw/') ? 'raw' : 'image';
     await cloudinary.uploader.destroy(publicId, {
       resource_type: resourceType,
@@ -89,6 +99,14 @@ export async function deleteUpload(req, res) {
     idea.attachments = idea.attachments.filter((item) => item.public_id !== publicId);
     idea.lastActiveAt = new Date();
     await idea.save();
+
+    // Decrement user uploads quota counters
+    const user = await User.findById(req.user._id);
+    if (user) {
+      user.credits.uploadCountUsed = Math.max(0, (user.credits.uploadCountUsed || 0) - 1);
+      user.credits.uploadStorageUsed = Math.max(0, (user.credits.uploadStorageUsed || 0) - size);
+      await user.save();
+    }
 
     res.json({ success: true, data: idea });
   } catch (err) {
