@@ -22,12 +22,12 @@ const useTaskStore = create((set, get) => ({
       const newTask = {
         id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
         title: task.title,
+        description: task.description || '',
         phase: task.phase || 'mvp',
         status: 'pending',
         priority: task.priority || 'medium',
         estimatedTime: task.estimatedTime || '',
         createdAt: new Date().toISOString(),
-        ...task,
       };
       const updated = { ...state.tasks, [ideaId]: [...ideaTasks, newTask] };
       localStorage.setItem('ideashub_tasks', JSON.stringify(updated));
@@ -63,6 +63,24 @@ const useTaskStore = create((set, get) => ({
     set((state) => {
       const ideaTasks = (state.tasks[ideaId] || []).filter((t) => t.id !== taskId);
       const updated = { ...state.tasks, [ideaId]: ideaTasks };
+      localStorage.setItem('ideashub_tasks', JSON.stringify(updated));
+      return { tasks: updated };
+    });
+  },
+
+  reorderTasks: (ideaId, phaseId, reorderedPhaseTasks) => {
+    set((state) => {
+      const allTasks = state.tasks[ideaId] || [];
+      
+      let phaseIndex = 0;
+      const updatedTasks = allTasks.map((t) => {
+        if (t.phase === phaseId) {
+          return reorderedPhaseTasks[phaseIndex++];
+        }
+        return t;
+      });
+
+      const updated = { ...state.tasks, [ideaId]: updatedTasks };
       localStorage.setItem('ideashub_tasks', JSON.stringify(updated));
       return { tasks: updated };
     });

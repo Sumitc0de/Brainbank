@@ -1,4 +1,4 @@
-import { Plus, Menu, Search } from 'lucide-react';
+import { Plus, Menu } from 'lucide-react';
 import useIdeaStore from '../store/useIdeaStore';
 
 const titles = {
@@ -12,7 +12,7 @@ const titles = {
 };
 
 export default function Header({ onMenuToggle }) {
-  const { activeView, searchQuery, setSearchQuery, setAddModalOpen } = useIdeaStore();
+  const { activeView, setAddModalOpen } = useIdeaStore();
   const { h, sub } = titles[activeView] || titles.dashboard;
 
   return (
@@ -31,25 +31,10 @@ export default function Header({ onMenuToggle }) {
         <p className="text-xs text-fg-3 truncate hidden sm:block">{sub}</p>
       </div>
 
-      {/* Search */}
-      <div className="relative hidden sm:block w-56 lg:w-72">
-        <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-fg-4 pointer-events-none" />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search ideas…"
-          className="w-full pl-10 pr-3 py-2 text-sm rounded-xl
-            bg-surface-1/70 border border-edge text-fg placeholder:text-fg-4
-            focus:border-purple focus:shadow-[0_0_0_3px_rgba(223,32,70,.10)]
-            transition-all duration-200"
-        />
-      </div>
-
       {/* Add Idea */}
       <button
         onClick={() => setAddModalOpen(true)}
-        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white
+        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-accent-fg
           bg-gradient-to-r from-purple to-purple-soft rounded-xl
           shadow-lg shadow-purple/20
           hover:shadow-purple/30 hover:scale-[1.03]

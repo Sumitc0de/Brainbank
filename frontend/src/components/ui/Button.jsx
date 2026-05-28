@@ -1,12 +1,12 @@
 import { motion } from 'framer-motion';
 
 const VARIANTS = {
-  primary:   'bg-gradient-to-r from-purple to-purple-soft text-white shadow-lg shadow-purple/20 hover:shadow-purple/30',
-  secondary: 'bg-white/60 text-fg border border-edge hover:bg-surface-3/70',
+  primary:   'bg-gradient-to-r from-purple to-purple-soft text-accent-fg shadow-lg shadow-purple/20 hover:shadow-purple/30',
+  secondary: 'bg-surface-3 text-fg border border-edge hover:bg-surface-4',
   ghost:     'text-fg-2 hover:text-fg hover:bg-white/60',
   danger:    'bg-red/10 text-red border border-red/20 hover:bg-red/15',
   success:   'bg-green/10 text-green border border-green/20 hover:bg-green/15',
-  cyan:      'bg-gradient-to-r from-blue to-cyan text-fg shadow-lg shadow-cyan/25',
+  cyan:      'bg-gradient-to-r from-blue to-cyan text-surface-0 shadow-lg shadow-cyan/25',
 };
 
 const SIZES = {

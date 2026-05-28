@@ -260,6 +260,7 @@ export default function SettingsView() {
         ideaTasks.forEach(t => {
           tasksData.push({
             'Task': t.title || '',
+            'Description': t.description || '',
             'Phase': t.phase || 'mvp',
             'Status': t.status || 'pending',
             'Priority': t.priority || 'medium',
@@ -502,7 +503,7 @@ export default function SettingsView() {
                     className="w-12 h-12 rounded-full object-cover border border-purple/30 shadow-card"
                   />
                 ) : (
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple to-purple-soft flex items-center justify-center text-lg font-black text-white shrink-0 shadow-card">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple to-purple-soft flex items-center justify-center text-lg font-black text-accent-fg shrink-0 shadow-card">
                     {user?.name ? user.name[0].toUpperCase() : 'F'}
                   </div>
                 )}
@@ -616,7 +617,7 @@ export default function SettingsView() {
               <button
                 type="button"
                 onClick={handleExcelExport}
-                className="w-full flex items-center justify-center gap-2 rounded-xl bg-purple px-4 py-3 text-xs font-bold text-white hover:bg-purple-deep transition-all cursor-pointer shadow-glow-purple active:scale-[0.99]"
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-purple px-4 py-3 text-xs font-bold text-accent-fg hover:bg-purple-deep transition-all cursor-pointer shadow-glow-purple active:scale-[0.99]"
               >
                 <Download size={14} />
                 <span>Export Multi-Sheet Backup (.xlsx)</span>

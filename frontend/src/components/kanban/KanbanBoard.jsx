@@ -11,18 +11,68 @@ const COLS = [
   { id: 'completed', title: 'Completed',  dot: 'bg-green' },
 ];
 
-export default function KanbanBoard({ onIdeaClick }) {
-  const { ideas, updateIdeaStatus } = useIdeaStore();
+export default function KanbanBoard({ onIdeaClick, renderAfter }) {
+  const { ideas, updateIdeaStatus, setQueueOrder, getQueuedIdeas } = useIdeaStore();
 
   const col = (status) =>
     ideas.filter((i) => i.status === status)
          .sort((a, b) => (b.scores?.total || 0) - (a.scores?.total || 0));
 
   const onDragEnd = async (r) => {
-    if (!r.destination) return;
+    const { destination, source, draggableId } = r;
+    if (!destination) return;
+
+    // Check if anything actually changed
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+
     try {
-      await updateIdeaStatus(r.draggableId, r.destination.droppableId);
-      toast(`Moved to ${r.destination.droppableId}`, 'success');
+      if (source.droppableId === 'priority-queue' && destination.droppableId === 'priority-queue') {
+        // Scenario 1: Reorder within the priority queue
+        const queuedIdeas = getQueuedIdeas();
+        const newIds = queuedIdeas.map((i) => i.id);
+        const [removed] = newIds.splice(source.index, 1);
+        newIds.splice(destination.index, 0, removed);
+        setQueueOrder(newIds);
+      } else if (destination.droppableId === 'priority-queue') {
+        // Scenario 2: Dragged from Kanban column into the priority queue
+        const queuedIdeas = getQueuedIdeas();
+        const currentIds = queuedIdeas.map((i) => i.id);
+        const cleanIds = currentIds.filter((id) => id !== draggableId);
+        cleanIds.splice(destination.index, 0, draggableId);
+        setQueueOrder(cleanIds);
+
+        // Update status in backend/state if not already queued
+        const draggedIdea = ideas.find((i) => i.id === draggableId);
+        if (draggedIdea && draggedIdea.status !== 'queued') {
+          await updateIdeaStatus(draggableId, 'queued');
+        }
+        toast('Added to Priority Queue', 'success');
+      } else if (source.droppableId === 'priority-queue') {
+        // Scenario 3: Dragged out of priority queue to a Kanban column
+        const queuedIdeas = getQueuedIdeas();
+        const newIds = queuedIdeas.map((i) => i.id).filter((id) => id !== draggableId);
+        setQueueOrder(newIds);
+
+        // Update status in backend/state
+        await updateIdeaStatus(draggableId, destination.droppableId);
+        toast(`Moved to ${destination.droppableId}`, 'success');
+      } else {
+        // Scenario 4: Standard Kanban column to Kanban column drag
+        // Remove from queueOrder if it was there and is moving to a non-queued status
+        if (destination.droppableId !== 'queued') {
+          const queuedIdeas = getQueuedIdeas();
+          const newIds = queuedIdeas.map((i) => i.id).filter((id) => id !== draggableId);
+          setQueueOrder(newIds);
+        }
+        
+        await updateIdeaStatus(draggableId, destination.droppableId);
+        toast(`Moved to ${destination.droppableId}`, 'success');
+      }
     } catch (err) {
       toast(err.message || 'Move failed', 'error');
     }
@@ -30,7 +80,7 @@ export default function KanbanBoard({ onIdeaClick }) {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 items-stretch">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 items-stretch mb-8">
         {COLS.map((c) => {
           const items = col(c.id);
           return (
@@ -74,10 +124,10 @@ export default function KanbanBoard({ onIdeaClick }) {
                             style={dp.draggableProps.style}
                           >
                             <div 
-                              className={`transition-all duration-200 origin-center
+                              className={`origin-center
                                 ${ds.isDragging 
                                   ? 'scale-[1.03] rotate-1 shadow-elevated opacity-95 select-none pointer-events-none' 
-                                  : 'hover:scale-[1.01]'}`}
+                                  : 'transition-all duration-200 hover:scale-[1.01]'}`}
                             >
                               <IdeaCard idea={idea} compact onClick={onIdeaClick} />
                             </div>
@@ -93,6 +143,7 @@ export default function KanbanBoard({ onIdeaClick }) {
           );
         })}
       </div>
+      {renderAfter}
     </DragDropContext>
   );
 }

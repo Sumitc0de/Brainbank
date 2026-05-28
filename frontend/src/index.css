@@ -44,6 +44,15 @@
   --accent-purple: #df2046;
   --accent-purple-soft: #ff9f33;
   --accent-purple-deep: #b91637;
+  --accent-purple-fg: #ffffff;
+
+  /* ---- Dynamic Theme Colors (Light Mode Defaults) ---- */
+  --blue: #0284c7;        /* High-contrast blue */
+  --cyan: #0891b2;        /* High-contrast cyan */
+  --green: #15803d;       /* High-contrast green */
+  --amber: #b45309;       /* High-contrast amber */
+  --red: #df2046;         /* High-contrast red */
+  --rose: #b91c1c;        /* High-contrast rose */
 }
 
 .dark {
@@ -85,6 +94,15 @@
   --accent-purple: #df2046;
   --accent-purple-soft: #ff9f33;
   --accent-purple-deep: #b91637;
+  --accent-purple-fg: #ffffff;
+
+  /* ---- Dynamic Theme Colors (Dark Mode Defaults) ---- */
+  --blue: #85b9df;        /* Pastel blue */
+  --cyan: #b8d7e8;        /* Pastel cyan */
+  --green: #2d6f29;       /* Gamified green */
+  --amber: #e3c873;       /* Pastel gold/amber */
+  --red: #df2046;         /* Sunset red */
+  --rose: #ef6b5a;        /* Rose gold */
 }
 
 @theme {
@@ -110,12 +128,13 @@
   --color-purple: var(--accent-purple);
   --color-purple-soft: var(--accent-purple-soft);
   --color-purple-deep: var(--accent-purple-deep);
-  --color-blue: #85b9df;
-  --color-cyan: #b8d7e8;
-  --color-green: #2d6f29;
-  --color-amber: #e3c873;
-  --color-red: #df2046;
-  --color-rose: #ef6b5a;
+  --color-accent-fg: var(--accent-purple-fg);
+  --color-blue: var(--blue);
+  --color-cyan: var(--cyan);
+  --color-green: var(--green);
+  --color-amber: var(--amber);
+  --color-red: var(--red);
+  --color-rose: var(--rose);
 
   /* ---- Glass ---- */
   --color-glass: var(--glass);
@@ -418,6 +437,7 @@ input[type="range"]::-moz-range-thumb {
   --accent-purple: #f4f4f5;
   --accent-purple-soft: #fafafa;
   --accent-purple-deep: #e4e4e7;
+  --accent-purple-fg: #18181b;
 }
 
 .dark.theme-focus-mode {
@@ -455,6 +475,7 @@ input[type="range"]::-moz-range-thumb {
   --accent-purple: #84cc16;
   --accent-purple-soft: #a3e635;
   --accent-purple-deep: #65a30d;
+  --accent-purple-fg: #000000;
 }
 
 /* ============================================================

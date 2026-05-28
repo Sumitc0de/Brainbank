@@ -9,6 +9,14 @@ const useIdeaStore = create((set, get) => ({
   isLoading: false,
   error: null,
   isAddModalOpen: false,
+  queueOrder: (() => {
+    try {
+      const saved = localStorage.getItem('brainbank_queue_order');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  })(),
 
   // UI actions
   setActiveView: (view) => set({ activeView: view }),
@@ -16,6 +24,14 @@ const useIdeaStore = create((set, get) => ({
   setSelectedIdea: (idea) => set({ selectedIdea: idea }),
   clearSelectedIdea: () => set({ selectedIdea: null }),
   setAddModalOpen: (open) => set({ isAddModalOpen: open }),
+  setQueueOrder: (ids) => {
+    try {
+      localStorage.setItem('brainbank_queue_order', JSON.stringify(ids));
+    } catch (e) {
+      console.error('Failed to save queue order', e);
+    }
+    set({ queueOrder: ids });
+  },
 
   // Fetch all ideas
   fetchIdeas: async () => {
@@ -127,6 +143,22 @@ const useIdeaStore = create((set, get) => ({
     }
   },
 
+  // Update PRD section
+  updatePrdSection: async (id, section, content) => {
+    try {
+      const res = await api.updatePrdSection(id, section, content);
+      const updated = res.data;
+      set((state) => ({
+        ideas: state.ideas.map((i) => (i.id === id ? updated : i)),
+        selectedIdea: state.selectedIdea?.id === id ? updated : state.selectedIdea,
+      }));
+      return updated;
+    } catch (err) {
+      set({ error: err.message });
+      throw err;
+    }
+  },
+
   // Media attachments
   uploadAttachment: async ({ ideaId, file, type, category, onProgress }) => {
     try {
@@ -179,6 +211,31 @@ const useIdeaStore = create((set, get) => ({
     if (score >= 8) return 'high';
     if (score >= 5) return 'medium';
     return 'low';
+  },
+
+  getQueuedIdeas: () => {
+    const { ideas, queueOrder } = get();
+    const allQueued = ideas.filter((i) => i.status === 'queued');
+    
+    // Filter queueOrder to only contain ideas that are currently 'queued'
+    const validQueueOrder = queueOrder.filter((id) => allQueued.some((i) => i.id === id));
+    
+    // Get ideas that are not in the validQueueOrder
+    const remaining = allQueued.filter((i) => !validQueueOrder.includes(i.id));
+    
+    // Sort remaining by scores.total descending
+    remaining.sort((a, b) => {
+      const scoreA = a.scores?.total ?? 0;
+      const scoreB = b.scores?.total ?? 0;
+      return scoreB - scoreA;
+    });
+    
+    // Build the complete list: ordered first, then sorted remaining
+    const orderedIdeas = validQueueOrder.map((id) => allQueued.find((i) => i.id === id));
+    const merged = [...orderedIdeas, ...remaining];
+    
+    // Return top 4
+    return merged.slice(0, 4);
   },
 }));
 

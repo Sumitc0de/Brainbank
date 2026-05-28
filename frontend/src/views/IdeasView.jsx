@@ -80,7 +80,7 @@ export default function IdeasView() {
       )}
 
       <AnimatePresence>
-        {sel && <IdeaDetail idea={sel} onClose={() => setSel(null)} />}
+        {sel && <IdeaDetail idea={ideas.find((i) => i.id === sel.id) || sel} onClose={() => setSel(null)} />}
       </AnimatePresence>
     </div>
   );

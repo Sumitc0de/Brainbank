@@ -91,6 +91,14 @@ const useResearchStore = create((set, get) => ({
       return { research: updated };
     });
   },
+
+  reorderResearch: (ideaId, reorderedItems) => {
+    set((state) => {
+      const updated = { ...state.research, [ideaId]: reorderedItems };
+      localStorage.setItem('ideashub_research', JSON.stringify(updated));
+      return { research: updated };
+    });
+  },
 }));
 
 export default useResearchStore;
